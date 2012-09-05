@@ -1,0 +1,102 @@
+# -*- org -*-
+
+A protocol for information dissemination.
+
+* Overview
+  :PROPERTIES:
+  :CUSTOM_ID: overview
+  :END:
+- server :: computational environment capable of housing points and
+     communicating messages
+
+- points :: communicating entity, including
+  - an address URI (possibly also a name)
+  - a public key for encryption and verification
+
+- messages :: data sent between a single point and a set of points.
+  - public message :: single point to the null set i.e. everyone
+  - single message :: single point to single point
+
+* Needs
+** encryption
+** signing
+** distributed keyword search
+** distributed tables
+e.g., for association of
+- user names with URIs
+- see if a copy of twitter's schema is available online
+- more...
+
+** distributed message dissemination
+like email
+
+** mime
+will need to allow multipart messages
+- being as similar as email would be good
+- learning from email would also be good
+
+* Tools
+- PGP for the signing, verification, encryption and decryption of all
+  messages
+- I know there are distributed search engine implementations
+
+* Protocol
+* Notes
+** Twitter-like services
+- http://www.twhirl.org/
+- http://pownce.com/
+- http://www.jaiku.com/
+- http://www.sixapart.com/
+- http://www.jabber.org/
+
+** RFC twitter-like API
+   :PROPERTIES:
+   :ID:       e6e05b9e-651a-4ab9-9ca8-bf7728f8278d
+   :END:
+- http://www.hanselman.com/blog/RFCOpenTweetsWhyIsMicrobloggingCentralized.aspx
+  (look at the comments)
+
+- http://www.russellbeattie.com/blog/peep-an-open-twitter-server
+
+- http://ilya.netapt.com/blog/archive/2008/05/03/opentweet-distributed-twitter-like-service/
+
+** Use cases
+- some from links at [[id:e6e05b9e-651a-4ab9-9ca8-bf7728f8278d][RFC twitter-like API]]
+- similar to
+  - twitter style information dissemination
+  - social information posting and reading
+
+*** find a feed
+just use web pages, or integrate into the spec
+
+*** listing microblogs
+will need some sort of title, meta-information or summary
+(note: meta-information gathering is a common form of warentless surveillance)
+
+*** subscribing
+*** replies
+*** keyword searching
+    :PROPERTIES:
+    :CUSTOM_ID: keyword-searching
+    :END:
+
+*** hashtags
+Apparently these arose organically from the keyword search mechanisms
+built into twitter.  So it would seem that this is simply a subset of
+[[#keyword-searching]].
+
+Clients may make these clickable on their own.
+
+*** direct addressing
+- some form of universal addressing (see [[#overview]] points)
+- likely some need for abbreviated names or distributed table linking
+  names to URIs
+
+*** CLI friendly
+e.g., cat a remote resource and pipe the result into a program.
+: cat friend:some/movies.mov|mplayer
+** how to identify sub-point resources
+e.g., how can I browse the messages available from some end point.
+- file system?
+- temporal feed?
+- must respect the groups and permissions set by that end point
