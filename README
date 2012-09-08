@@ -1,53 +1,83 @@
-# -*- org -*-
-
-A protocol for information dissemination.
-
-Replace twitter with Usenet and PGP.
+#                                                         -*- org -*-
+#+Title: A System/Protocol for information dissemination.
 
 * Overview
   :PROPERTIES:
   :CUSTOM_ID: overview
   :END:
-- server :: computational environment capable of housing points and
-     communicating messages
 
-- points :: communicating entity, including
-  - an address URI (possibly also a name)
-  - a public key for encryption and verification
+A distributed system through which named or anonymous *users* can
+disseminate *messages*.
 
-- messages :: data sent between a single point and a set of points.
-  - public message :: single point to the null set i.e. everyone
-  - single message :: single point to single point
+If Usenet and Twitter had a paranoid child.
 
-* Needs
-** encryption
-** signing
-** distributed submission, storage and persistence
-USENET!
+** Users
+- Any named user must be associated with a PGP public key
+- Any non-anonymous message must be signed by its sender
+- Should there be another way to associate information with a sender?
+  - allow for some other data to be associated
+    - real name
+    - URL
+    - arbitrary text
+  - just let them do this with their messages
+
+** Structure of a Message
+A message is just a key-value store with some rules about which keys
+are required when.
+
+Required keys:
+- ID :: a hash of every part of the message *but* the ID key and value
+
+Optional keys:
+- Sender :: this value would need two parts, the name of the sender,
+     and a PGP signature for every other part of the message aside
+     from the ID
+- Contents :: holding either plain text or mime-encoded data.
+  - Should some sort of mime header be required?
+  - Should this be email-compatible?
+  - This may be encrypted (should that be a different field)
+  - Should this be required
+- Target :: this could specify users or groups to target.  This
+     should probably just hold another key-value pair in which the
+     key could be the type of thing targeted and the value could be
+     the identifier.  E.g.,
+     | group | alt.foo  |
+     | user  | john.doe |
+     Should this be extensible or should the keys be fixed.
+- Subject :: is this required?
+- Time To Live :: does this make sense?
+
+Should misc other keys be allowed? why not
+
+** Distribution of Messages
+Along the same lines as Usenet.  Users connect to servers, and servers
+exchange information betwixt themselves.
+
+** Organization of Messages
+There are three methods for the discovery of messages
+- sender
 - keyword search
-  - see [[#usenet-archiving-and-searching][Usenet Archiving and Searching]]
-- tables: e.g., for association of
-  - user names → URL/URI ??
-  - user names → public keys
-
-- see if a copy of twitter's schema is available online
-- more...
-
-** mime
-will need to allow multipart messages
-- being as similar as email would be good
-- learning from email would also be good
+- messages may target a user
+- messages may target a group
+- arbitrarily extensible headers?
+- servers can add their own discovery methods
 
 * Tools
-- PGP for message signing, verification, encryption and decryption
-
-** Usenet
+** JSON -- Message serialization
+** PGP for message signing, verification, encryption and decryption
+** USENET -- distributed submission, storage, persistence and discovery
 This is the perfect model for distribution, it just needs:
 - faster dissemination (closer to real time than twice-daily batches)
 - a less hierarchical system of organization
   (users and keywords rather than newsgroups)
 
 - [[http://tools.ietf.org/html/rfc1036][Standard for Interchange of USENET Messages]]
+
+- keyword search
+  - see [[#usenet-archiving-and-searching][Usenet Archiving and Searching]]
+- tables: e.g., for association of
+  - user names → URL/URI ??
+  - user names → public keys
 
 *** Usenet Archiving and Searching
     :PROPERTIES:
@@ -56,7 +86,15 @@ This is the perfect model for distribution, it just needs:
 - 'lq-text' package, by Liam Quin
 - http://en.wikipedia.org/wiki/X-No-Archive
 
+** MIME -- content serialization
+will need to allow multipart messages
+- being as similar as email would be good
+- learning from email would also be good
+
 * Protocol
+This is the main goal, but may need to wait until we've formalized the
+above and written some reference implementations.
+
 * Notes
 ** Relevant Links
 *** Twitter-like services
