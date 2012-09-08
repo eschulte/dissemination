@@ -42,23 +42,25 @@ will need to allow multipart messages
 
 * Protocol
 * Notes
-** Twitter-like services
+** Relevant Links
+*** Twitter-like services
 - http://www.twhirl.org/
 - http://pownce.com/
 - http://www.jaiku.com/
 - http://www.sixapart.com/
 - http://www.jabber.org/
 
-** RFC twitter-like API
+*** Twitter Clones and RFCs for twitter-like API
    :PROPERTIES:
    :ID:       e6e05b9e-651a-4ab9-9ca8-bf7728f8278d
    :END:
 - http://www.hanselman.com/blog/RFCOpenTweetsWhyIsMicrobloggingCentralized.aspx
   (look at the comments)
-
 - http://www.russellbeattie.com/blog/peep-an-open-twitter-server
-
 - http://ilya.netapt.com/blog/archive/2008/05/03/opentweet-distributed-twitter-like-service/
+- http://orangejuiceliberationfront.com/building-a-distributed-twitter/
+- http://inessential.com/2011/03/11/alternative_to_twitter_
+- http://redis.io/topics/twitter-clone
 
 ** Use cases
 - some from links at [[id:e6e05b9e-651a-4ab9-9ca8-bf7728f8278d][RFC twitter-like API]]
