@@ -2,6 +2,8 @@
 
 A protocol for information dissemination.
 
+Replace twitter with Usenet and PGP.
+
 * Overview
   :PROPERTIES:
   :CUSTOM_ID: overview
@@ -20,15 +22,16 @@ A protocol for information dissemination.
 * Needs
 ** encryption
 ** signing
-** distributed keyword search
-** distributed tables
-e.g., for association of
-- user names with URIs
+** distributed submission, storage and persistence
+USENET!
+- keyword search
+  - see [[#usenet-archiving-and-searching][Usenet Archiving and Searching]]
+- tables: e.g., for association of
+  - user names → URL/URI ??
+  - user names → public keys
+
 - see if a copy of twitter's schema is available online
 - more...
-
-** distributed message dissemination
-like email
 
 ** mime
 will need to allow multipart messages
@@ -36,9 +39,22 @@ will need to allow multipart messages
 - learning from email would also be good
 
 * Tools
-- PGP for the signing, verification, encryption and decryption of all
-  messages
-- I know there are distributed search engine implementations
+- PGP for message signing, verification, encryption and decryption
+
+** Usenet
+This is the perfect model for distribution, it just needs:
+- faster dissemination (closer to real time than twice-daily batches)
+- a less hierarchical system of organization
+  (users and keywords rather than newsgroups)
+
+- [[http://tools.ietf.org/html/rfc1036][Standard for Interchange of USENET Messages]]
+
+*** Usenet Archiving and Searching
+    :PROPERTIES:
+    :CUSTOM_ID: usenet-archiving-and-searching
+    :END:
+- 'lq-text' package, by Liam Quin
+- http://en.wikipedia.org/wiki/X-No-Archive
 
 * Protocol
 * Notes
