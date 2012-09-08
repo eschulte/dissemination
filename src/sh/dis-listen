@@ -1,0 +1,21 @@
+#!/bin/bash
+#
+# Usage: dis-listen [port]
+# Listen for messages and pass them to dis-unpack.
+#
+# port            - the port on which to listen
+#                   (default to 4444)
+#
+# This is *very* simple and stupid.  Proof of concept.
+# Step by sending a SIGHUP i.e., with C-c.
+#
+. $(dirname $0)/dis-common
+
+if [ -z "$1" ];then PORT="4444";else PORT="$1";fi
+
+exit_hook(){ echo "No longer listening."; break; }
+trap exit_hook SIGHUP SIGINT SIGTERM
+
+for ((;;));do
+    nc -l -p $PORT|dis-unpack || break;
+done

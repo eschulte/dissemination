@@ -1,0 +1,19 @@
+#!/bin/bash
+#
+# Usage: not executable
+# Common functionality to be used in all dis scripts
+#
+SCRIPT="$0"
+help(){
+    HELP_TEXT=$(cat "$SCRIPT" \
+        |sed '/^[^#]/q' \
+        |head -n -1 \
+        |tail -n +3 \
+        |sed -e :a -e '/^\n*$/{$d;N;ba' -e '}' \
+        |cut -c3-)
+    echo "$HELP_TEXT"
+    exit 1
+}
+if echo "$1"|grep "^\-\?\-h" >/dev/null;then help; fi
+
+DATABASE="endpoints.txt"

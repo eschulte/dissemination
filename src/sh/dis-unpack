@@ -1,0 +1,15 @@
+#!/bin/bash
+#
+# Usage: dis-unpack [TODO: input/output file specs]
+# Unpack a message from (STDIN or file) to (STDOUT or file)
+#
+# TODO: implement this at all, not just pass STDIN to STDOUT
+#
+. $(dirname $0)/dis-common
+CONTENTS=$(cat -|bunzip2|gpg --decrypt 2>/dev/null)
+if [ $? -eq 0 ];then
+    echo "$CONTENTS"
+else
+    echo "Signature Failed >&2"
+    exit 1
+fi

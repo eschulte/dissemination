@@ -1,0 +1,11 @@
+#!/bin/bash
+#
+# Usage: dis-pack
+# Read a message from STDIN and pack it.
+#
+. $(dirname $0)/dis-common
+
+MESSAGE="$(cat -)"
+
+# calculate the signature
+echo "$MESSAGE"|gpg --armor --sign|bzip2
