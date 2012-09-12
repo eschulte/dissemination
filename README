@@ -88,6 +88,8 @@ Methods for the discovery of messages
 
 * Tools
 ** JSON -- Message serialization
+This seems like the obvious data format for a message hash.
+
 ** PGP for message signing, verification, encryption and decryption
 ** USENET -- distributed submission, storage, persistence and discovery
 This is the perfect model for distribution, it just needs:
@@ -115,16 +117,28 @@ will need to allow multipart messages
 - being as similar as email would be good
 - learning from email would also be good
 
+** gzip -- on the wire compression
+We shouldn't worry about compression, just let some standard library
+compress messages or groups of messages on the wire or on the disk.
+
+This may require another piece on information s.t. compressed
+messages are sent with the message key.
+
 * Protocol
+  :PROPERTIES:
+  :CUSTOM_ID: protocol
+  :END:
 This is the main goal, but may need to wait until we've formalized the
 above and written some reference implementations.
 
 * Library
+Highly related to [[#protocol]].
+
 What would application writers want in an API?
 
 Both clients and servers.
 - package :: from JSON message to signed or encrypted and ready for
-     transmission on the wire
+     dumping through an external compression engine.
 
 * Notes
 ** Relevant Links
