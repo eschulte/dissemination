@@ -14,19 +14,31 @@ If Usenet and Twitter had a paranoid child.
 ** Users
 - Any named user must be associated with a PGP public key
 - Any non-anonymous message must be signed by its sender
-- Should there be another way to associate information with a sender?
-  - allow for some other data to be associated
-    - real name
-    - URL
-    - arbitrary text
-  - just let them do this with their messages
+
+*** What other information should be associated with a sender?
+- real name
+- URL
+- arbitrary text
+- small picture
+
+You could always allow a username to be associated with a hash, and
+allow any key/value pairs, as long as one of them is a pgp public key.
+But there is a benefit to actually putting things into the spec, so
+you don't get 15 different versions of an icon from 15 different
+clients.  If so, what is important/general enough to go into the spec,
+and what should be required or just optional?
+
+My only firm feeling on this is that a "real name" field be optional.
 
 ** Structure of a Message
 A message is just a key-value store with some rules about which keys
 are required when.
 
 Required keys:
-- ID :: a hash of every part of the message *but* the ID key and value
+- ID :: a hash of every part of the message *but* the ID key and
+     value.  Are there any other parts of the message which
+     should *not* be included in the signature?  Should the signature
+     include a specification of the keys that it is generated from?
 
 Optional keys:
 - Sender :: this value would need two parts, the name of the sender,
@@ -49,12 +61,24 @@ Optional keys:
 
 Should misc other keys be allowed? why not
 
+*** internal references
+There are times when you want to reference another part of the same
+message, e.g., when you want to include images to be references from
+an html portion.  What should the syntax be for this?  Are existing
+email mime rules sufficiently powerful enough to handle this?
+
+This should probably be set in the standard.
+
 ** Distribution of Messages
 Along the same lines as Usenet.  Users connect to servers, and servers
 exchange information betwixt themselves.
 
-** Organization of Messages
-There are three methods for the discovery of messages
+The biggest difference between this and usenet would be the
+expectation that the inter-server exchange is somewhat more
+timely/real-time, i.e., not just 2 batch transfers per day.
+
+** Organization and discovery of Messages
+Methods for the discovery of messages
 - sender
 - keyword search
 - messages may target a user
@@ -94,6 +118,13 @@ will need to allow multipart messages
 * Protocol
 This is the main goal, but may need to wait until we've formalized the
 above and written some reference implementations.
+
+* Library
+What would application writers want in an API?
+
+Both clients and servers.
+- package :: from JSON message to signed or encrypted and ready for
+     transmission on the wire
 
 * Notes
 ** Relevant Links
@@ -156,3 +187,19 @@ e.g., how can I browse the messages available from some end point.
 - file system?
 - temporal feed?
 - must respect the groups and permissions set by that end point
+
+This use case comes from more of a hosted model, where as the rest of
+the system is moving into a more push-based model.
+
+** DKIM -- combat spam / something analogous?
+- DKIM :: Domain Keys Identified Mail (see http://www.dkim.org/)
+     Messages are signed with the public key of the sending domain.
+     This prevents forgery of the from domain line.
+
+Would it make sense to do something analogous?
+
+There is already the need for every message to be signed by the
+sender, so, a spammer would be forced to use a valid name in the From
+field.  I guess in this case the solution would be to throttle the
+generation of new names.  Or possibly require a new name to have at
+least one signature in the web of trust or something.
