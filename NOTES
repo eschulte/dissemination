@@ -1,7 +1,0 @@
-#                                                         -*- org -*-
-
-* how to explicitly specify the public key to use in verification
-it would be nice if this could be provided at the command line
-
-* GPGME -- the GPG C API
-(see [[info:gpgme#Top]])
