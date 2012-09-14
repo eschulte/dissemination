@@ -20,3 +20,6 @@ if $(echo "$KEYS"|grep "signature" >/dev/null) &&
     done
     verify "$SIGNATURE" "$SIGNED_DATA" || error "signature verification failed"
 fi
+
+# print content
+echo "$CONTENT"
