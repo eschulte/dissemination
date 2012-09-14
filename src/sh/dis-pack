@@ -12,28 +12,28 @@
 . $(dirname $0)/dis-common
 
 ## Parse command line arguments
-sign=""; signatory=""; recipients=(); file="";
+SIGN=""; SIGNATORY=""; RECIPIENTS=(); FILE="";
 if ! options=$(getopt -o sS:e: -l sign,signatory:,encrypt: -- "$@");then
     help; exit 1;
 fi
 set -- $options
 while [ $# -gt 0 ];do
     case $1 in
-        -s|--sign) sign="yes";;
+        -s|--sign) SIGN="yes";;
         -S|--signatory)
-            if [ -z "$signatory" ];then
-                signatory="$2"; shift;
+            if [ -z "$SIGNATORY" ];then
+                SIGNATORY="$2"; shift;
             else
-                echo "can only specify 1 signatory" 1>&2; exit 1;
+                error "can only specify 1 signatory";
             fi;;
-        -e|--encrypt) recipients+="$2"; shift;;
+        -e|--encrypt) RECIPIENTS+="$2"; shift;;
         (--) shift; break;;
-        (-*) echo "$0: error -- unrecognized option $1" 1>&2; exit 1;;
+        (-*) error "$0: error -- unrecognized option $1";;
         (*)  break;;
     esac
     shift
 done
-CONTENT=$(if [ -z "$file" ];then cat -;else cat "$file";fi|quote)
+CONTENT=$(if [ -z "$FILE" ];then cat -;else cat "$FILE";fi|quote)
 
 ## Build the output
 echo -n "{"
@@ -44,18 +44,23 @@ echo -n " \"keys\":[\"content\"],"
 echo -n " \"hash\":\"$HASH\","
 
 # Sign
-if [ ! -z "$sign" ];then
+if [ ! -z "$SIGN" ];then
 
     # Signatory
-    signatory=$(gpg_name $signatory)
-    echo -n " \"signatory\":\"$signatory\","
+    SIGNATORY=$(gpg_name $SIGNATORY)
+    echo -n " \"signatory\":\"$SIGNATORY\","
 
     # Signature
-    signature=$(sign "$signatory" "$CONTENT")
-    echo -n " \"signature\":\"$signature\","
+    SIGNATURE=$(sign "$SIGNATORY" "$CONTENT")
+    echo -n " \"signature\":$SIGNATURE,"
 
 fi
 
-echo -n " \"content\":\"$CONTENT\""
+# TODO: Encrypted for recipients
+if [ -z $RECIPIENTS ];then
+    echo -n " \"content\":$CONTENT"
+else
+    error "Encryption for recipients is not yet supported.";
+fi
 
 echo    " }"

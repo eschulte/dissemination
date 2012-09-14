@@ -16,6 +16,8 @@ help(){
 }
 if echo "$1"|grep "^\-\?\-h" >/dev/null;then help; fi
 
+error(){ echo $@ 1>&2; exit 1; }
+
 gpg_name(){
     # TODO: setup a mapping between custom user names and gpg IDs
     local signatory="$1";
