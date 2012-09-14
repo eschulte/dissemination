@@ -16,7 +16,7 @@ SIGN=""; SIGNATORY=""; RECIPIENTS=(); FILE="";
 if ! options=$(getopt -o sS:e: -l sign,signatory:,encrypt: -- "$@");then
     help; exit 1;
 fi
-set -- $options
+eval set -- $options
 while [ $# -gt 0 ];do
     case $1 in
         -s|--sign) SIGN="yes";;
@@ -47,7 +47,7 @@ echo -n " \"hash\":\"$HASH\","
 if [ ! -z "$SIGN" ];then
 
     # Signatory
-    SIGNATORY=$(gpg_name $SIGNATORY)
+    SIGNATORY="$(gpg_name "$SIGNATORY")"
     echo -n " \"signatory\":\"$SIGNATORY\","
 
     # Signature
