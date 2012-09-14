@@ -12,7 +12,7 @@
 . $(dirname $0)/dis-common
 
 ## Parse command line arguments
-SIGN=""; SIGNATORY=""; RECIPIENTS=(); FILE="";
+SIGN=""; SIGNATORY=""; RECIPIENTS=();
 if ! options=$(getopt -o sS:e: -l sign,signatory:,encrypt: -- "$@");then
     help; exit 1;
 fi
@@ -33,7 +33,7 @@ while [ $# -gt 0 ];do
     esac
     shift
 done
-CONTENT=$(if [ -z "$FILE" ];then cat -;else cat "$FILE";fi)
+CONTENT=$(if [ -z "$1" ];then cat -;else cat "$1";fi)
 
 ## Build the output
 echo -n "{"
