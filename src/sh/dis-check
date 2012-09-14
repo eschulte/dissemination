@@ -1,0 +1,21 @@
+#!/bin/bash
+#
+# Usage: dis-check
+# Checks that all required commands are available in PATH
+#
+. $(dirname $0)/dis-common
+REQUIREMENTS=('gzip' 'gpg')
+SATISFIED="yes"
+for prog in ${REQUIREMENTS[*]};do
+    if ! which $prog >/dev/null 2>/dev/null;then
+        echo "missing required program $prog";
+        SATISFIED="no";
+    fi
+done
+
+if [ "$SATISFIED" == "yes" ];then
+    echo "all required programs are present";
+    exit 0;
+else
+    exit 1;
+fi
