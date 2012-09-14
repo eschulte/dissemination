@@ -19,6 +19,7 @@ if $(echo "$KEYS"|grep "signature" >/dev/null) &&
         SIGNED_DATA="$SIGNED_DATA$(get $key)"
     done
     verify "$SIGNATURE" "$SIGNED_DATA" || error "signature verification failed"
+    echo "Signatory: $SIGNATORY"
 fi
 
 # print content
