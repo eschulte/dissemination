@@ -4,7 +4,7 @@
 # Checks that all required commands are available in PATH
 #
 . $(dirname $0)/dis-common
-REQUIREMENTS=('gzip' 'gpg' 'sha1sum')
+REQUIREMENTS=('gzip' 'gpg' 'sha1sum' 'jshon')
 SATISFIED="yes"
 for prog in ${REQUIREMENTS[*]};do
     if ! which $prog >/dev/null 2>/dev/null;then

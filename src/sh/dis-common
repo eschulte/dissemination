@@ -35,7 +35,7 @@ sign(){
 }
 
 quote(){
-    sed 's/\\/\\\\/g;s/"/\\"/g;:a;N;$!ba;s/\n/\\n/g'
+    jshon -s "$(if [ -z "$1" ];then cat -;else echo "$1";fi)" 2>/dev/null
 }
 
 sha1(){
