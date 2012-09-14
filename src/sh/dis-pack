@@ -33,7 +33,7 @@ while [ $# -gt 0 ];do
     esac
     shift
 done
-CONTENT=$(if [ -z "$FILE" ];then cat -;else cat "$FILE";fi|quote)
+CONTENT=$(if [ -z "$FILE" ];then cat -;else cat "$FILE";fi)
 
 ## Build the output
 echo -n "{"
@@ -51,14 +51,13 @@ if [ ! -z "$SIGN" ];then
     echo -n " \"signatory\":\"$SIGNATORY\","
 
     # Signature
-    SIGNATURE=$(sign "$SIGNATORY" "$CONTENT")
-    echo -n " \"signature\":$SIGNATURE,"
+    echo -n " \"signature\":$(sign "$SIGNATORY" "$CONTENT"|quote),"
 
 fi
 
 # TODO: Encrypted for recipients
 if [ -z $RECIPIENTS ];then
-    echo -n " \"content\":$CONTENT"
+    echo -n " \"content\":$(echo "$CONTENT"|quote)"
 else
     error "Encryption for recipients is not yet supported.";
 fi

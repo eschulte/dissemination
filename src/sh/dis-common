@@ -32,8 +32,15 @@ gpg_name(){
 }
 
 sign(){
-    local gpg_name="$1"; local contents="$2";
-    echo "$content"|gpg --armor --detach-sign --local-user "$gpg_name"|quote
+    local gpg_name="$1"; local content="$2";
+    echo "$content"|gpg --armor --detach-sign --local-user "$gpg_name"
+}
+
+verify(){
+    local signature="$1"; local signed_data="$2";
+    echo "$signature" > /tmp/tmp.sig
+    echo "$signed_data" > /tmp/tmp.data
+    gpg --verify /tmp/tmp.sig /tmp/tmp.data
 }
 
 quote(){
@@ -44,4 +51,19 @@ sha1(){
     local content="$@";
     local length=$(expr length "$content");
     echo "\"content\" $length $content"|sha1sum|cut -c-40
+}
+
+## All these json commands implicitly act on the $MESSAGE variable
+keys(){
+    echo "$JSON"|jshon -k
+}
+
+get(){
+    local key="$1";
+    echo "$JSON"|jshon -e $key -u
+}
+
+get_array(){
+    local key="$1";
+    echo "$JSON"|jshon -e $key -a -u
 }

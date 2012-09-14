@@ -5,4 +5,18 @@
 # 
 #
 . $(dirname $0)/dis-common
-echo "not implemented" 1>&2; exit 1;
+JSON=$(if [ -z $1 ];then cat -;else cat $1;fi)
+KEYS=$(keys)
+CONTENT=$(get content)
+
+# if signed verify signature
+if $(echo "$KEYS"|grep "signature" >/dev/null) &&
+   $(echo "$KEYS"|grep "signatory" >/dev/null);then
+    SIGNATURE=$(get signature)
+    SIGNATORY=$(get signatory)
+    SIGNED_DATA=""
+    for key in $(get_array keys);do
+        SIGNED_DATA="$SIGNED_DATA$(get $key)"
+    done
+    verify "$SIGNATURE" "$SIGNED_DATA" || error "signature verification failed"
+fi
