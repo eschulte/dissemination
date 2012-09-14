@@ -1,2 +1,0 @@
-# endpoint (TODO: public-key) host port
-me localhost 4457

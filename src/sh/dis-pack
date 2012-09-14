@@ -1,11 +1,61 @@
 #!/bin/bash
 #
-# Usage: dis-pack
-# Read a message from STDIN and pack it.
+# Usage: dis-pack [OPTION]... [FILE]
+# Read a message from FILE or standard input and pack it.
+#  TODO: add support for encryption targeting a group
+#  TODO: add support for more key value pairs than just content
+#
+#  -s, --sign                  sign message
+#  -S, --signatory [USER-ID]   use USER-ID as signer, implies -s
+#  -e, --encrypt [USER-ID]     encrypt for USER-ID (multiples okay)
 #
 . $(dirname $0)/dis-common
 
-MESSAGE="$(cat -)"
+## Parse command line arguments
+sign=""; signatory=""; recipients=(); file="";
+if ! options=$(getopt -o sS:e: -l sign,signatory:,encrypt: -- "$@");then
+    help; exit 1;
+fi
+set -- $options
+while [ $# -gt 0 ];do
+    case $1 in
+        -s|--sign) sign="yes";;
+        -S|--signatory)
+            if [ -z "$signatory" ];then
+                signatory="$2"; shift;
+            else
+                echo "can only specify 1 signatory" 1>&2; exit 1;
+            fi;;
+        -e|--encrypt) recipients+="$2"; shift;;
+        (--) shift; break;;
+        (-*) echo "$0: error -- unrecognized option $1" 1>&2; exit 1;;
+        (*)  break;;
+    esac
+    shift
+done
+CONTENT=$(if [ -z "$file" ];then cat -;else cat "$file";fi|quote)
 
-# calculate the signature
-echo "$MESSAGE"|gpg --armor --sign|bzip2
+## Build the output
+echo -n "{"
+
+# Hash
+HASH=$(sha1 $CONTENT)
+echo -n " \"keys\":[\"content\"],"
+echo -n " \"hash\":\"$HASH\","
+
+# Sign
+if [ ! -z "$sign" ];then
+
+    # Signatory
+    signatory=$(gpg_name $signatory)
+    echo -n " \"signatory\":\"$signatory\","
+
+    # Signature
+    signature=$(sign "$signatory" "$CONTENT")
+    echo -n " \"signature\":\"$signature\","
+
+fi
+
+echo -n " \"content\":\"$CONTENT\""
+
+echo    " }"

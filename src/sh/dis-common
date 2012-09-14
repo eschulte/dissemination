@@ -16,4 +16,30 @@ help(){
 }
 if echo "$1"|grep "^\-\?\-h" >/dev/null;then help; fi
 
-DATABASE="endpoints.txt"
+gpg_name(){
+    # TODO: setup a mapping between custom user names and gpg IDs
+    local signatory="$1";
+    if [ -z "$signatory" ];then
+        if [ -z "$GPGKEY" ];then
+            echo "no default GPG key set in GPGKEY";
+        else
+            signatory="$GPGKEY";
+        fi
+    fi
+    echo "$signatory"
+}
+
+sign(){
+    local gpg_name="$1"; local contents="$2";
+    echo "$content"|gpg --armor --detach-sign --local-user "$gpg_name"|quote
+}
+
+quote(){
+    sed 's/\\/\\\\/g;s/"/\\"/g;:a;N;$!ba;s/\n/\\n/g'
+}
+
+sha1(){
+    local content="$@";
+    local length=$(expr length "$content");
+    echo "\"content\" $length $content"|sha1sum|cut -c-40
+}
