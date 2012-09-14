@@ -35,24 +35,22 @@ A message is just a key-value store with some rules about which keys
 are required when.
 
 Required keys:
-- ID :: a hash of every part of the message *but* the ID key and
-     value.  Are there any other parts of the message which
-     should *not* be included in the signature?  Should the signature
-     include a specification of the keys that it is generated from?
 
 Optional keys:
-- Sender :: this value would need two parts, the name of the sender,
+- sender :: this value would need two parts, the name of the sender,
      and a PGP signature for every other part of the message aside
      from the ID
-- Contents :: holding either plain text or mime-encoded data.
+- signature :: should apply in the same manner as encryption, in
+     fact, will need to think [[#signing-and-encrypting][about this more]]
+- contents :: holding either plain text or mime-encoded data.
   - Should some sort of mime header be required?
   - Should this be email-compatible?
   - This may be encrypted (should that be a different field)
   - Should this be required
-- Target :: this could specify users or groups to target.  This
-     should probably just hold another key-value pair in which the
-     key could be the type of thing targeted and the value could be
-     the identifier.  E.g.,
+- recipients :: this could specify users or groups to target.  This
+     should probably just hold another key-value pair in which the key
+     could be the type of thing targeted and the value could be the
+     identifier.  E.g.,
      | group | alt.foo  |
      | user  | john.doe |
      Should this be extensible or should the keys be fixed.
@@ -60,6 +58,33 @@ Optional keys:
 - Time To Live :: does this make sense?
 
 Should misc other keys be allowed? why not
+
+*** signing and encrypting
+    :PROPERTIES:
+    :CUSTOM_ID: signing-and-encrypting
+    :END:
+
+Will want signature and encryption to apply to as much of the message
+(including meta data) as possible.  What is the minimum required to
+show for each use case.
+
+- signature would require
+  - name of the signer
+  - hash of everything else
+  - detached signature of everything else
+  - array of hash keys in the order they are signed and hashed
+
+- encryption
+  - name of recipients
+  - hash of encrypted data
+  - blob of encrypted data
+
+- signed and encrypted
+  - name of sender
+  - name of recipients
+  - hash of encrypted data
+  - detached signature of blob of encrypted data
+  - blob of encrypted data
 
 *** internal references
 There are times when you want to reference another part of the same
