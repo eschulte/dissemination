@@ -1,0 +1,27 @@
+#!/bin/bash
+#
+# Usage: dis-send [OPTIONS] [FILE]
+# Read message from FILE or standard input and send to HOST:PORT
+#
+# -h, --host [HOST]        the host to send to (default:localhost)
+# -p, --port [PORT]        the port on the host (default:4444)
+#
+. $(dirname $0)/dis-common
+HOST=localhost; PORT=4444;
+if ! options=$(getopt -o k:p: -l host:,port: -- "$@");then
+    help; exit 1;
+fi
+eval set -- $options
+while [ $# -gt 0 ];do
+    case $1 in
+        -h|--host) HOST="$2"; shift;;
+        -p|--port) port="$2"; shift;;
+        (--) shift; break;;
+        (-*) error "$0: error -- unrecognized option $1";;
+        (*)  break;;
+    esac
+    shift
+done
+CONTENT=$(if [ -z "$1" ];then cat -;else cat "$1";fi)
+
+echo "$CONTENT"|gzip|netcat -c "$HOST" "$PORT"

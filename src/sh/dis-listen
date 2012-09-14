@@ -1,21 +1,43 @@
 #!/bin/bash
 #
-# Usage: dis-listen [port]
+# Usage: dis-listen [OPTION]...
 # Listen for messages and pass them to dis-unpack.
 #
-# port            - the port on which to listen
-#                   (default to 4444)
+# -p, --port [PORT]      listen on PORT (default to 4444)
+# -e, --exec [PROG]      call PROG on each message (default cat)
 #
 # This is *very* simple and stupid.  Proof of concept.
-# Step by sending a SIGHUP i.e., with C-c.
+# Stop by sending a SIGHUP i.e., with C-c.
 #
 . $(dirname $0)/dis-common
+## Parse command line arguments
+PORT="4444"; PROG="cat"
+if ! options=$(getopt -o p:e: -l port:,exec: -- "$@");then
+    help; exit 1;
+fi
+eval set -- $options
+while [ $# -gt 0 ];do
+    case $1 in
+        -p|--port) PORT="$2"; shift;;
+        -e|--exec) PROG="$2"; shift;;
+        (--) shift; break;;
+        (-*) error "$0: error -- unrecognized option $1";;
+        (*)  break;;
+    esac
+    shift
+done
+echo "listen localhost:$PORT|$PROG" 1>&2
 
-if [ -z "$1" ];then PORT="4444";else PORT="$1";fi
-
-exit_hook(){ echo "No longer listening."; break; }
+exit_hook(){
+    echo -e "\nclosed localhost:$PORT|$PROG" 1>&2
+    exit 0;
+}
 trap exit_hook SIGHUP SIGINT SIGTERM
 
 for ((;;));do
-    nc -l -p $PORT|dis-unpack || break;
+    if MESSAGE="$(netcat -l -p "$PORT"|gunzip)";then
+        echo "$MESSAGE"|eval "$PROG"
+    else
+        error "netcat error";
+    fi
 done
