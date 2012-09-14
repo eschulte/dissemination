@@ -136,9 +136,16 @@ Highly related to [[#protocol]].
 
 What would application writers want in an API?
 
+Should the API handle indexing/searching or should this be left up to
+the servers (this question can probably wait)?
+
 Both clients and servers.
 - package :: from JSON message to signed or encrypted and ready for
      dumping through an external compression engine.
+- un-package :: take a packed message and return a unpacked -- throw
+     an error if signature verification or decryption fails
+- handle incoming :: takes a function to call on each incoming
+     message (after decompression and un-packaging)
 
 * Notes
 ** Relevant Links
