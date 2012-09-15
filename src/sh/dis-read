@@ -1,39 +1,49 @@
 #!/bin/bash
 #
 # Usage: dis-read [OPTION] [HASH]...
-# Read messages from the database, optionally limit to given hashes
+# Read messages from the database, optionally limit to given hashes.
+# Pass '-' as first hash to read hashes from standard input.
 #
 #  -d, --database [FILE]     set database file (default $DIS_BASE)
 #  -c, --count               display a count of the messages
 #  -k, --key [KEY]           list values of KEY for messages w/KEY
 #  -u, --unstring            unstring the KEY values
+#  -g, --grep [STR]          return hash if STR is in KEY value
 #
 . $(dirname $0)/dis-common
 
 ## Parse command line arguments
-BASE="$DIS_BASE"; COUNT=""; KEY="";UNSTRING="";
-eval set -- $(getopt -o d:c,k:,u -l database:,count,key:,unstring -- "$@"|| help && exit 1;)
+BASE="$DIS_BASE"; COUNT=""; KEY="";UNSTRING="";GREP="";
+eval set -- $(getopt -o d:ck:ug: -l database:,count,key:,unstring,grep: -- "$@"|| help && exit 1;)
 while [ $# -gt 0 ];do
     case $1 in
         -d|--database) BASE="$2"; shift;;
         -c|--count)    COUNT="yes";;
         -k|--key)      KEY="$2"; shift;;
         -u|--unstring) UNSTRING="-u";;
+        -g|--grep)     GREP="$2"; shift;;
         (--) shift; break;;
         (-*) error "$0: error -- unrecognized option $1";;
         (*)  break;;
     esac
     shift
 done
-if [ ! -z "$UNSTRING" ];then
-    if [ -z "$KEY" ];then
-        error "unstring can only be specified when a key is given.";
+if [ -z "$KEY" ];then
+    if [ ! -z "$UNSTRING" ];then
+        error "'unstring' option only allowed with 'key' option.";
+    fi
+    if [ ! -z "$GREP" ];then
+        error "'grep' option only allowed with 'key' option.";
     fi
 fi
 if [ -z "$BASE" ];then
     error -e "must specify a database with -d or the DIS_BASE env variable"
 fi
-HASHES="$@"
+if [ "$1" == "-" ];then
+    HASHES="$(cat -|tr '\n' ' ')"
+else
+    HASHES="$@"
+fi
 
 ## Narrow by hash
 if [ -z "$HASHES" ];then
@@ -58,7 +68,15 @@ else
     for line in $(cat "$BASE"|from_base|eval "$HASHES");do
         HASH=$(echo -E "$line"|jshon -e hash -u 2>/dev/null)
         VAL=$(echo -E "$line"|jshon -e $KEY $UNSTRING 2>/dev/null)
-        if [ ! -z "$VAL" ];then echo "$HASH $VAL"; fi
+        if [ ! -z "$VAL" ];then
+            if [ -z "$GREP" ];then
+                echo "$HASH $VAL";
+            else
+                if $(contains "$VAL" "$GREP");then
+                    echo "$HASH";
+                fi
+            fi
+        fi
         VAL=""
     done|eval "$COUNT"
 fi
