@@ -10,8 +10,7 @@ KEYS=$(keys)
 CONTENT=$(get content)
 
 # if signed verify signature
-if $(echo "$KEYS"|grep "signature" >/dev/null) &&
-   $(echo "$KEYS"|grep "signatory" >/dev/null);then
+if $(contains "$KEYS" "signature") && $(contains "$KEYS" "signatory");then
     SIGNATURE=$(get signature)
     SIGNATORY=$(get signatory)
     SIGNED_DATA=""

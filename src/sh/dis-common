@@ -3,6 +3,11 @@
 # Usage: not executable
 # Common functionality to be used in all dis scripts
 #
+contains(){
+    local it="$1"; local item="$2";
+    echo "$it"|grep "$item" >/dev/null 2>/dev/null
+}
+
 SCRIPT="$0"
 help(){
     HELP_TEXT=$(cat "$SCRIPT" \
@@ -14,7 +19,7 @@ help(){
     echo "$HELP_TEXT"
     exit 1
 }
-if echo "$1"|grep "^\-\?\-h" >/dev/null;then help; fi
+if $(contains "$1" "^\-\?\-h");then help; fi
 
 error(){ echo $@ 1>&2; exit 1; }
 
@@ -53,7 +58,7 @@ sha1(){
     echo "\"content\" $length $content"|sha1sum|cut -c-40
 }
 
-## All these json commands implicitly act on the $MESSAGE variable
+## JSON commands implicitly act on the $MESSAGE variable
 keys(){
     echo "$JSON"|jshon -k
 }
