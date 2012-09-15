@@ -21,7 +21,8 @@ help(){
 }
 if $(contains "$1" "^\-\?\-h");then help; fi
 
-error(){ echo $@ 1>&2; exit 1; }
+warn(){ echo $@ 1>&2; }
+error(){ warn $@; exit 1; }
 
 options(){
     eval set -- $(getopt $@|| help && exit 1;)

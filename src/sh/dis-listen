@@ -24,10 +24,10 @@ while [ $# -gt 0 ];do
     esac
     shift
 done
-echo "listen localhost:$PORT|$PROG" 1>&2
+warn "listen localhost:$PORT|$PROG"
 
 exit_hook(){
-    echo -e "\nclosed localhost:$PORT|$PROG" 1>&2
+    warn -e "\nclosed localhost:$PORT|$PROG"
     exit 0;
 }
 trap exit_hook SIGHUP SIGINT SIGTERM
