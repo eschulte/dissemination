@@ -1,0 +1,64 @@
+#!/bin/bash
+#
+# Usage: dis-read [OPTION] [HASH]...
+# Read messages from the database, optionally limit to given hashes
+#
+#  -d, --database [FILE]     set database file (default $DIS_BASE)
+#  -c, --count               display a count of the messages
+#  -k, --key [KEY]           list values of KEY for messages w/KEY
+#  -u, --unstring            unstring the KEY values
+#
+. $(dirname $0)/dis-common
+
+## Parse command line arguments
+BASE="$DIS_BASE"; COUNT=""; KEY="";UNSTRING="";
+eval set -- $(getopt -o d:c,k:,u -l database:,count,key:,unstring -- "$@"|| help && exit 1;)
+while [ $# -gt 0 ];do
+    case $1 in
+        -d|--database) BASE="$2"; shift;;
+        -c|--count)    COUNT="yes";;
+        -k|--key)      KEY="$2"; shift;;
+        -u|--unstring) UNSTRING="-u";;
+        (--) shift; break;;
+        (-*) error "$0: error -- unrecognized option $1";;
+        (*)  break;;
+    esac
+    shift
+done
+if [ ! -z "$UNSTRING" ];then
+    if [ -z "$KEY" ];then
+        error "unstring can only be specified when a key is given.";
+    fi
+fi
+if [ -z "$BASE" ];then
+    error -e "must specify a database with -d or the DIS_BASE env variable"
+fi
+HASHES="$@"
+
+## Narrow by hash
+if [ -z "$HASHES" ];then
+    HASHES="cat"
+else
+    HASHES="grep -i '\"hash\":\"\\($(echo "$HASHES"|sed 's/ /\\|/g')\\)\"'"
+fi
+
+## Count
+if [ -z "$COUNT" ];then
+    COUNT="cat"
+else
+    COUNT="wc -l"
+fi
+
+## Print value of specified keys
+if [ -z "$KEY" ];then
+    cat "$BASE"|from_base|eval "$HASHES"|eval "$COUNT"
+else
+    IFS="
+"
+    for line in $(cat "$BASE"|from_base|eval "$HASHES");do
+        HASH=$(echo -E "$line"|jshon -e hash -u 2>/dev/null)
+        VAL=$(echo -E "$line"|jshon -e $KEY $UNSTRING 2>/dev/null)
+        if [ ! -z "$VAL" ];then echo "$HASH $VAL"; fi
+        VAL=""
+    done|eval "$COUNT"
+fi
