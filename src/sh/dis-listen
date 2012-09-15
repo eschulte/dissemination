@@ -6,8 +6,11 @@
 # -p, --port [PORT]      listen on PORT (default to 4444)
 # -e, --exec [PROG]      call PROG on each message (default cat)
 #
-# This is *very* simple and stupid.  Proof of concept.
+# This is *very* simple and stupid.  Proof of concept server.
 # Stop by sending a SIGHUP i.e., with C-c.
+#
+# For example, to save all incoming messages to the local database run
+#     $ dis-listen -e dis-save
 #
 . $(dirname $0)/dis-common
 

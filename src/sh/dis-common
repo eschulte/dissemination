@@ -3,10 +3,16 @@
 # Usage: not executable
 # Common functionality to be used in all dis scripts
 #
+
+## General helpers
 contains(){
     local it="$1"; local item="$2";
     echo "$it"|grep "$item" >/dev/null 2>/dev/null
 }
+
+warn(){ echo $@ 1>&2; }
+
+error(){ warn $@; exit 1; }
 
 SCRIPT="$0"
 help(){
@@ -16,18 +22,21 @@ help(){
         |tail -n +3 \
         |sed -e :a -e '/^\n*$/{$d;N;ba' -e '}' \
         |cut -c3-)
-    echo "$HELP_TEXT"
-    exit 1
+    error "$HELP_TEXT"
 }
 if $(contains "$1" "^\-\?\-h");then help; fi
-
-warn(){ echo $@ 1>&2; }
-error(){ warn $@; exit 1; }
 
 options(){
     eval set -- $(getopt $@|| help && exit 1;)
 }
 
+sha1(){
+    local content="$@";
+    local length=$(expr length "$content");
+    echo "\"content\" $length $content"|sha1sum|cut -c-40
+}
+
+## GPG Helpers
 gpg_name(){
     # TODO: setup a mapping between custom user names and gpg IDs
     local signatory="$1";
@@ -53,17 +62,11 @@ verify(){
     gpg --batch --verify /tmp/tmp.sig /tmp/tmp.data >/dev/null 2>/dev/null
 }
 
+## JSON helpers, some explicitly act on the MESSAGE variable
 quote(){
     jshon -s "$(if [ -z "$1" ];then cat -;else echo "$1";fi)" 2>/dev/null
 }
 
-sha1(){
-    local content="$@";
-    local length=$(expr length "$content");
-    echo "\"content\" $length $content"|sha1sum|cut -c-40
-}
-
-## JSON commands implicitly act on the $MESSAGE variable
 keys(){
     echo "$JSON"|jshon -k
 }
@@ -78,7 +81,7 @@ get_array(){
     echo "$JSON"|jshon -e $key -a -u
 }
 
-## Database access helpers
+## Database helpers
 if_gzip(){
     local cmd="$1";
     eval $(if $(contains "$(file "$BASE")" gzip);then echo $cmd;else echo cat;fi)
