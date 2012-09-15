@@ -10,12 +10,10 @@
 # Stop by sending a SIGHUP i.e., with C-c.
 #
 . $(dirname $0)/dis-common
+
 ## Parse command line arguments
 PORT="4444"; PROG="cat"
-if ! options=$(getopt -o p:e: -l port:,exec: -- "$@");then
-    help; exit 1;
-fi
-eval set -- $options
+options -o p:e: -l port:,exec: -- "$@"
 while [ $# -gt 0 ];do
     case $1 in
         -p|--port) PORT="$2"; shift;;
@@ -34,6 +32,7 @@ exit_hook(){
 }
 trap exit_hook SIGHUP SIGINT SIGTERM
 
+## Listen for incoming messages
 for ((;;));do
     if MESSAGE="$(netcat -l -p "$PORT"|gunzip)";then
         echo "$MESSAGE"|eval "$PROG"

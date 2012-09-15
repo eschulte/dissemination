@@ -8,10 +8,7 @@
 #
 . $(dirname $0)/dis-common
 HOST=localhost; PORT=4444;
-if ! options=$(getopt -o k:p: -l host:,port: -- "$@");then
-    help; exit 1;
-fi
-eval set -- $options
+options getopt -o k:p: -l host:,port: -- "$@"
 while [ $# -gt 0 ];do
     case $1 in
         -h|--host) HOST="$2"; shift;;

@@ -23,6 +23,10 @@ if $(contains "$1" "^\-\?\-h");then help; fi
 
 error(){ echo $@ 1>&2; exit 1; }
 
+options(){
+    eval set -- $(getopt $@|| help && exit 1;)
+}
+
 gpg_name(){
     # TODO: setup a mapping between custom user names and gpg IDs
     local signatory="$1";

@@ -13,10 +13,7 @@
 
 ## Parse command line arguments
 SIGN=""; SIGNATORY=""; RECIPIENTS=();
-if ! options=$(getopt -o sS:e: -l sign,signatory:,encrypt: -- "$@");then
-    help; exit 1;
-fi
-eval set -- $options
+options  -o sS:e: -l sign,signatory:,encrypt: -- "$@"
 while [ $# -gt 0 ];do
     case $1 in
         -s|--sign) SIGN="yes";;

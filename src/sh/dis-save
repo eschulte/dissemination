@@ -9,7 +9,7 @@
 
 ## Parse command line arguments
 BASE="$DIS_BASE"
-eval set -- $(getopt -o d: -l database: -- "$@"|| help && exit 1;)
+options -o d: -l database: -- "$@"
 while [ $# -gt 0 ];do
     case $1 in
         -d|--database) BASE="$2"; shift;;
@@ -24,5 +24,5 @@ if [ -z "$BASE" ];then
 fi
 CONTENT=$(if [ -z "$1" ];then cat -;else cat "$1";fi)
 
-## add to the database
+## Add to the database
 echo "$CONTENT"|to_base >> "$BASE"
