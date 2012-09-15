@@ -72,3 +72,11 @@ get_array(){
     local key="$1";
     echo "$JSON"|jshon -e $key -a -u
 }
+
+## Database access helpers
+if_gzip(){
+    local cmd="$1";
+    eval $(if $(contains "$(file "$BASE")" gzip);then echo $cmd;else echo cat;fi)
+}
+to_base(){ if_gzip gzip; }
+from_base(){ if_gzip gunzip; }

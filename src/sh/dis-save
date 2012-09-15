@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # Usage: dis-save [OPTION] [FILE]
-# Read a message from FILE or standard input and save it.
+# Save a message from FILE or standard input to the database.
 #
 #  -d, --database     specify database file (default $DIS_BASE)
 #
@@ -25,6 +25,4 @@ fi
 CONTENT=$(if [ -z "$1" ];then cat -;else cat "$1";fi)
 
 ## add to the database
-echo "$CONTENT" \
-    |eval $(if $(contains "$(file "$BASE")" gzip);then echo gizp;else echo cat;fi) \
-    >> "$BASE"
+echo "$CONTENT"|to_base >> "$BASE"
