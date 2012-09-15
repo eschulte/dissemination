@@ -1,0 +1,30 @@
+#!/bin/bash
+#
+# Usage: dis-save [OPTION] [FILE]
+# Read a message from FILE or standard input and save it.
+#
+#  -d, --database     specify database file (default $DIS_BASE)
+#
+. $(dirname $0)/dis-common
+
+## Parse command line arguments
+BASE="$DIS_BASE"
+eval set -- $(getopt -o d: -l database: -- "$@"|| help && exit 1;)
+while [ $# -gt 0 ];do
+    case $1 in
+        -d|--database) BASE="$2"; shift;;
+        (--) shift; break;;
+        (-*) error "$0: error -- unrecognized option $1";;
+        (*)  break;;
+    esac
+    shift
+done
+if [ -z "$BASE" ];then
+    error -e "must specify a database with -d or the DIS_BASE env variable"
+fi
+CONTENT=$(if [ -z "$1" ];then cat -;else cat "$1";fi)
+
+## add to the database
+echo "$CONTENT" \
+    |eval $(if $(contains "$(file "$BASE")" gzip);then echo gizp;else echo cat;fi) \
+    >> "$BASE"
