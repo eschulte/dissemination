@@ -19,4 +19,4 @@ debug:
 	echo "$(OBJECTS) $(EXES)"
 
 clean:
-	rm $(OBJECTS) $(EXES)
+	rm -f $(OBJECTS) $(EXES)
