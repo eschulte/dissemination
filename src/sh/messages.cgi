@@ -27,7 +27,7 @@ messages(){
 messages_to_html(){
     IFS='
 '
-    for JSON in $(messages);do
+    for JSON in $(messages|tac);do
         KEYS="$(keys)"
         HASH="$(get hash)"
         echo  "<dt title='$HASH'>$(echo "$HASH"|cut -c1-8)</dt><dd>"
