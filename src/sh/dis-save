@@ -20,7 +20,7 @@ while [ $# -gt 0 ];do
     shift
 done
 if [ -z "$BASE" ];then
-    error -e "must specify a database with -d or the DIS_BASE env variable"
+    error "must specify a database with -d or the DIS_BASE env variable"
 fi
 CONTENT=$(if [ -z "$1" ];then cat -;else cat "$1";fi)
 

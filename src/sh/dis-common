@@ -10,9 +10,9 @@ contains(){
     echo "$it"|grep "$item" >/dev/null 2>/dev/null
 }
 
-warn(){ echo $@ 1>&2; }
+warn(){ echo "$@" 1>&2; }
 
-error(){ warn $@; exit 1; }
+error(){ echo "$@" 1>&2; exit 1; }
 
 SCRIPT="$0"
 help(){
