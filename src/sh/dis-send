@@ -2,16 +2,17 @@
 #
 # Usage: dis-send [OPTIONS] [FILE]
 # Read message from FILE or standard input and send to HOST:PORT
+#  TODO: should there be a handshake or error code for failure?
 #
-# -h, --host [HOST]        the host to send to (default:localhost)
+# -s, --server [HOST]      the host to send to (default:localhost)
 # -p, --port [PORT]        the port on the host (default:4444)
 #
 . $(dirname $0)/dis-common
 HOST=localhost; PORT=4444;
-options -o k:p: -l host:,port: -- "$@"
+options -o s:p: -l server:,port: -- "$@"
 while [ $# -gt 0 ];do
     case $1 in
-        -h|--host) HOST="$2"; shift;;
+        -s|--server) HOST="$2"; shift;;
         -p|--port) port="$2"; shift;;
         (--) shift; break;;
         (-*) error "$0: error -- unrecognized option $1";;
