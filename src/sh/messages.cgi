@@ -30,7 +30,8 @@ messages_to_html(){
     for JSON in $(messages|tac);do
         KEYS="$(keys)"
         HASH="$(get hash)"
-        echo  "<dt title='$HASH'>$(echo "$HASH"|cut -c1-8)</dt><dd>"
+        echo "<dt><span title='$HASH'>$(echo "$HASH"|cut -c1-8)</span>"
+        echo "<a href='messages.cgi?hash=$HASH'>download</a></dt><dd>"
         if $(contains "$KEYS" signatory);then
             echo "Signed By: <span title='$(get signature)'>"
             echo "$(get signatory)</span>"
@@ -42,7 +43,7 @@ messages_to_html(){
     done
 }
 
-if [ -z "${params[grep]}" ];then
+if [ -z "${params[hash]}" ];then
 cat <<EOF
 Content-type: text/html
 
@@ -64,7 +65,9 @@ Content-type: text/html
 </html>
 EOF
 else
+cat <<EOF
 Content-type: text/json
 
-$(echo "${params[grep]}"|dis-read)
+$(echo "${params[hash]}"|dis-read -|head -1)
+EOF
 fi
