@@ -33,31 +33,37 @@ while [ $# -gt 0 ];do
 done
 CONTENT=$(if [ -z "$1" ];then cat -;else cat "$1";fi)
 
-## Build the output
-echo -n "{"
+JSON=$(
+    ## Build the output
+    echo -n "{"
 
-# Hash
-HASH=$(sha1 $CONTENT)
-echo -n " \"keys\":[\"content\"],"
-echo -n " \"hash\":\"$HASH\","
+    # Hash
+    HASH=$(sha1 $CONTENT)
+    echo -n " \"keys\":[\"content\"],"
+    echo -n " \"hash\":\"$HASH\","
 
-# Sign
-if [ ! -z "$SIGN" ];then
+    # Sign
+    if [ ! -z "$SIGN" ];then
 
-    # Signatory
-    SIGNATORY="$(gpg_name "$SIGNATORY")"
-    echo -n " \"signatory\":\"$SIGNATORY\","
+        # Signatory
+        SIGNATORY="$(gpg_name "$SIGNATORY")"
+        echo -n " \"signatory\":\"$SIGNATORY\","
 
-    # Signature
-    echo -n " \"signature\":$(sign "$SIGNATORY" "$CONTENT"|quote),"
+        # Signature
+        echo -n " \"signature\":$(sign "$SIGNATORY" "$CONTENT"|quote),"
 
-fi
-
-# TODO: Encrypted for recipients
-if [ -z $RECIPIENTS ];then
+    fi
+    
     echo -n " \"content\":$(echo "$CONTENT"|quote)"
-else
-    error "Encryption for recipients is not yet supported.";
-fi
+    
+    echo    " }")
 
-echo    " }"
+# Encrypted for recipients
+if [ -z "$RECIPIENTS" ];then
+    echo "$JSON"
+else
+    RECIP_STR="${RECIPIENTS[0]}";
+    # TODO: handle multiple recipients
+    echo -n "{\"recipients\":[$RECIP_STR], "
+    echo -n "\"encrypted\":$(quote "$(encrypt "$RECIPIENTS" "$JSON")")}"
+fi

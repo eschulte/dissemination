@@ -62,6 +62,13 @@ verify(){
     gpg --batch --verify /tmp/tmp.sig /tmp/tmp.data >/dev/null 2>/dev/null
 }
 
+encrypt(){
+    local recipients="$1"; local content="$2";
+    GPG_CMD="gpg --batch --armor -e"
+    for recipient in $(echo "$recipients");do GPG_CMD+=" -r $recipient"; done
+    echo "$content"|eval "$GPG_CMD"
+}
+
 ## JSON helpers, some explicitly act on the MESSAGE variable
 quote(){
     jshon -s "$(if [ -z "$1" ];then cat -;else echo "$1";fi)" 2>/dev/null
@@ -79,6 +86,15 @@ get(){
 get_array(){
     local key="$1";
     echo "$JSON"|jshon -e $key -a -u
+}
+
+to_array(){
+    local vals="$1";
+    ARRAY="$(shift "$vals")"
+    for val in $(echo "$vals");do
+        ARRAY+=", $val"
+    done
+    echo "[$ARRAY]"
 }
 
 ## Database helpers
