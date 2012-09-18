@@ -23,4 +23,7 @@ aur-upload: package-upload dissemination-0.1-1.src.tar.gz
 
 clean:
 	$(MAKE) -C src/c/ clean; \
-	rm -rf pkg/ src/dissemination/ *.tar.gz *.tar.xz
+	rm -rf pkg/ src/dissemination/
+
+real-clean:
+	rm -rf *.tar.gz *.tar.xz
