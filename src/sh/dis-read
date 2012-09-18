@@ -50,7 +50,7 @@ fi
 if [ -z "$HASHES" ];then
     HASHES="cat"
 else
-    HASHES="grep -i '\"hash\":\"\\($(echo "$HASHES"|sed 's/ /\\|/g')\\)\"'"
+    HASHES="grep -i '\"hash\":\"\\($(echo "$HASHES"|sed 's/ /\\|/g')\\)'"
 fi
 
 ## Count
