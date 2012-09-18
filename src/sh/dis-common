@@ -63,10 +63,11 @@ verify(){
 }
 
 encrypt(){
-    local recipients="$1"; local content="$2";
-    GPG_CMD="gpg --batch --armor -e"
-    for recipient in $(echo "$recipients");do GPG_CMD+=" -r $recipient"; done
-    echo "$content"|eval "$GPG_CMD"
+    local hide="$1"; local recipients="$2"; local content="$3";
+    if [ -z "$hide" ];then flag="-r";else flag="-R";fi
+    gpg_cmd="gpg --batch --armor -e"
+    for recipient in $(echo "$recipients");do gpg_cmd+=" $flag $recipient"; done
+    echo "$content"|eval "$gpg_cmd"
 }
 
 ## JSON helpers, some explicitly act on the MESSAGE variable

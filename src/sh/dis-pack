@@ -7,13 +7,14 @@
 #
 #  -s, --sign                  sign message
 #  -S, --signatory [USER-ID]   use USER-ID as signer, implies -s
-#  -e, --encrypt [USER-ID]     encrypt for USER-ID (multiples okay)
+#  -r, --recipient [USER-ID]   encrypt for USER-ID (multiples okay)
+#  -H, --hide                  hide recipients from public view
 #
 . $(dirname $0)/dis-common
 
 ## Parse command line arguments
-SIGN=""; SIGNATORY=""; RECIPIENTS=();
-options  -o sS:e: -l sign,signatory:,encrypt: -- "$@"
+SIGN=""; SIGNATORY=""; RECIPIENTS=(); HIDE="";
+options  -o sS:r:h -l sign,signatory:,recipient:,hide -- "$@"
 while [ $# -gt 0 ];do
     case $1 in
         -s|--sign) SIGN="yes";;
@@ -25,6 +26,8 @@ while [ $# -gt 0 ];do
                 error "can only specify 1 signatory";
             fi;;
         -e|--encrypt) RECIPIENTS+="$2"; shift;;
+        -e|--encrypt) RECIPIENTS+="$2"; shift;;
+        -H|--hide) HIDE="yes";;
         (--) shift; break;;
         (-*) error "$0: error -- unrecognized option $1";;
         (*)  break;;
@@ -64,6 +67,7 @@ if [ -z "$RECIPIENTS" ];then
 else
     RECIP_STR="${RECIPIENTS[0]}";
     # TODO: handle multiple recipients
-    echo -n "{\"recipients\":[$RECIP_STR], "
-    echo -n "\"encrypted\":$(quote "$(encrypt "$RECIPIENTS" "$JSON")")}"
+    echo -n "{"
+    if [ -z "$HIDE" ];then echo -n "\"recipients\":[$RECIP_STR], " fi
+    echo -n "\"encrypted\":$(quote "$(encrypt $HIDE "$RECIPIENTS" "$JSON")")}"
 fi
