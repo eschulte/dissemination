@@ -1,25 +1,31 @@
 #!/bin/bash
 #
 # Usage: dis-unpack [FILE]
-# Unpack a message from FILE or standard input
-# 
+# Verify message(s) read from FILE or standard input
+# Return non-zero if any signed messages fail to verify.
 #
 . $(dirname $0)/dis-common
-JSON=$(if [ -z $1 ];then cat -;else cat $1;fi)
-KEYS=$(keys)
-CONTENT=$(get content)
-
-# if signed verify signature
-if $(contains "$KEYS" "signature") && $(contains "$KEYS" "signatory");then
-    SIGNATURE=$(get signature)
-    SIGNATORY=$(get signatory)
-    SIGNED_DATA=""
-    for key in $(get_array keys);do
-        SIGNED_DATA="$SIGNED_DATA$(get $key)"
-    done
-    verify "$SIGNATURE" "$SIGNED_DATA" || error "signature verification failed"
-    echo "Signatory: $SIGNATORY"
-fi
-
-# print content
-echo "$CONTENT"
+MESSAGES=$(if [ -z $1 ];then cat -;else cat $1;fi)
+RETURN=0
+IFS='
+'
+for JSON in $(echo "$MESSAGES");do
+    KEYS=$(keys)
+    CONTENT=$(get content)
+    # if signed verify signature
+    if $(contains "$KEYS" "signature") && $(contains "$KEYS" "signatory");then
+        SIGNATURE=$(get signature)
+        SIGNATORY=$(get signatory)
+        DATA=""
+        for key in $(get_array keys);do DATA="$DATA$(get $key)"; done
+        if $(verify "$SIGNATURE" "$DATA");then
+            echo "$(get hash) pass $(get signatory)"
+        else
+            echo "$(get hash) fail $(get signatory)"
+            RETURN=1;
+        fi
+    else
+            echo "$(get hash)"
+    fi
+done
+exit $RETURN;
