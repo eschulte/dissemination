@@ -42,6 +42,7 @@ messages_to_html(){
     done
 }
 
+if [ -z "${params[grep]}" ];then
 cat <<EOF
 Content-type: text/html
 
@@ -62,3 +63,8 @@ Content-type: text/html
 </body>
 </html>
 EOF
+else
+Content-type: text/json
+
+$(echo "${params[grep]}"|dis-read)
+fi
