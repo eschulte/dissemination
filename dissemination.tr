@@ -8,7 +8,7 @@ Category                                        University of New Mexico
 Expires                                               September 19, 2012
 
 .ce
-A System/Protocol for distributed information dissemination
+A System for distributed information dissemination
 .ce
 <dissemination.txt>
 
@@ -20,8 +20,8 @@ Distribution of this memo is unlimited.
 
 This is a very rough draft used mainly to allow organization and
 sharing of ideas.  Do whatever you want with this document, just don't
-remove the Copyright notice, and add yourself to the Copyright notice
-if you add content to the document.
+remove the Copyright notice.  Add yourself to the Copyright notice if
+you add content to the document.
 
 .ti 0
 Copyright Notice
@@ -61,10 +61,9 @@ Table of Contents
 A distributed system through which named or anonymous users can
 disseminate open, signed, or encrypted messages.
 
-Think of a distributed version of twitter, running over a network of
-distributed servers similar to Usenet's architecture, using JSON as
-the data exchange format and GPG public and private keys for
-verification and encryption.
+Think of this as a distributed twitter, running on top of Usenet's
+architecture, using JSON as the data exchange format and GPG public
+and private keys for user authentication and encryption.
 
 .ti 0
 2. Overview
@@ -117,9 +116,9 @@ tab(:);
 r|l.
 Key:Description
 _
-keys:A JSON list of the keys which are signed.
-signatory:An identifier of the signatory readable by GPG.
-signature:An ASCII armor signature of the ordered values of keys.
+keys:JSON array of the keys in the order they are signed.
+signatory:Identifier of the signatory readable by GPG.
+signature:ASCII armor signature of the concatenated values of keys.
 .TE
 
 .in 3
@@ -138,7 +137,7 @@ Signed and Encrypted messages are like encrypted messages but they may
 contain a sender field, and the encrypted blob must also be signed by
 GPG.
 
-Anonymous messages may contain any valid JSON keys and values.
+Anonymous messages may contain arbitrary JSON keys and values.
 
 .ti 0
 3.2 Other optional keys?

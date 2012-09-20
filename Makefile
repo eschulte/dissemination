@@ -1,7 +1,10 @@
 HOST=moons.cs.unm.edu:public_html/data/
 
 all: aur
-.PHONY: package package-upload aur aur-upload clean
+.PHONY: package package-upload aur aur-upload clean doc
+
+doc: dissemination.tr
+	groff -t -Tascii $<|less
 
 dissemination.txt: dissemination.tr
 	groff -t -Tascii $< > $@
