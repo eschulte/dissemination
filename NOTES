@@ -1,179 +1,5 @@
-#                                                         -*- org -*-
-#+Title: A System/Protocol for information dissemination.
-
-* Overview
-  :PROPERTIES:
-  :CUSTOM_ID: overview
-  :END:
-
-A distributed system through which named or anonymous *users* can
-disseminate *messages*.
-
-If Usenet and Twitter had a paranoid child.
-
-** Users
-- Any named user must be associated with a PGP public key
-- Any non-anonymous message must be signed by its sender
-
-*** What other information should be associated with a sender?
-- real name
-- URL
-- arbitrary text
-- small picture
-
-You could always allow a username to be associated with a hash, and
-allow any key/value pairs, as long as one of them is a pgp public key.
-But there is a benefit to actually putting things into the spec, so
-you don't get 15 different versions of an icon from 15 different
-clients.  If so, what is important/general enough to go into the spec,
-and what should be required or just optional?
-
-My only firm feeling on this is that a "real name" field be optional.
-
-** Structure of a Message
-A message is just a key-value store with some rules about which keys
-are required when.
-
-*** signing and encrypting
-    :PROPERTIES:
-    :CUSTOM_ID: signing-and-encrypting
-    :END:
-
-Will want signature and encryption to apply to as much of the message
-(including meta data) as possible.  What is the minimum required to
-show for each use case.
-
-- signed would require
-  - array of hash keys in the order they are signed and hashed
-  - hash of everything else
-  - name of the signer
-  - detached signature of everything else
-  - JSON dictionary
-
-- encrypted
-  - name of recipients
-  - hash of encrypted data
-  - blob of encrypted data, serialized to JSON dictionary
-
-- signed and encrypted
-  - name of sender
-  - name of recipients
-  - hash of encrypted data
-  - detached signature of blob of encrypted data
-  - blob of encrypted data, serialized to JSON dictionary
-
-- anonymous (neither signed nor encrypted)
-  - array of hash keys in the order they are hashed
-  - hash
-  - JSON dictionary
-
-*** structure of JSON dictionary
-Required keys:
-
-Optional keys:
-- contents :: holding either plain text or mime-encoded data.
-  - Should some sort of mime header be required?
-  - Should this be email-compatible?
-  - This may be encrypted (should that be a different field)
-  - Should this be required
-- subject :: This should not be required.  Maybe this should be forced
-     to conform to whatever restrictions are placed on subject lines
-     in emails.
-- date :: optionally specify when this was sent, I don't know if
-     validation should be performed on this key.  Probably not,
-     because how would a server know when a message entered the
-     system.
-- time-to-live :: does this make sense?  lets use the =at=
-     notation. if this is a relative time then a date key would also
-     be required.
-
-Arbitrary other keys should be allowed.
-
-*** internal references
-There are times when you want to reference another part of the same
-message, e.g., when you want to include images to be references from
-an html portion.  What should the syntax be for this?  Are existing
-email mime rules sufficiently powerful enough to handle this?
-
-This should probably be set in the standard.
-
-** Distribution of Messages
-Along the same lines as Usenet.  Users connect to servers, and servers
-exchange information betwixt themselves.
-
-The biggest difference between this and usenet would be the
-expectation that the inter-server exchange is somewhat more
-timely/real-time, i.e., not just 2 batch transfers per day.
-
-** Organization and discovery of Messages
-Methods for the discovery of messages
-- sender
-- keyword search
-- messages may target a user
-- messages may target a group
-- arbitrarily extensible headers?
-- servers can add their own discovery methods
-
-* Tools
-** JSON -- Message serialization
-This seems like the obvious data format for a message hash.
-
-** PGP for message signing, verification, encryption and decryption
-** USENET -- distributed submission, storage, persistence and discovery
-This is the perfect model for distribution, it just needs:
-- faster dissemination (closer to real time than twice-daily batches)
-- a less hierarchical system of organization
-  (users and keywords rather than newsgroups)
-
-- [[http://tools.ietf.org/html/rfc1036][Standard for Interchange of USENET Messages]]
-
-- keyword search
-  - see [[#usenet-archiving-and-searching][Usenet Archiving and Searching]]
-- tables: e.g., for association of
-  - user names → URL/URI ??
-  - user names → public keys
-
-*** Usenet Archiving and Searching
-    :PROPERTIES:
-    :CUSTOM_ID: usenet-archiving-and-searching
-    :END:
-- 'lq-text' package, by Liam Quin
-- http://en.wikipedia.org/wiki/X-No-Archive
-
-** MIME -- content serialization
-will need to allow multipart messages
-- being as similar as email would be good
-- learning from email would also be good
-
-** gzip -- on the wire compression
-We shouldn't worry about compression, just let some standard library
-compress messages or groups of messages on the wire or on the disk.
-
-This may require another piece on information s.t. compressed
-messages are sent with the message key.
-
-* Protocol
-  :PROPERTIES:
-  :CUSTOM_ID: protocol
-  :END:
-This is the main goal, but may need to wait until we've formalized the
-above and written some reference implementations.
-
-* Library
-Highly related to [[#protocol]].
-
-What would application writers want in an API?
-
-Should the API handle indexing/searching or should this be left up to
-the servers (this question can probably wait)?
-
-Both clients and servers.
-- package :: from JSON message to signed or encrypted and ready for
-     dumping through an external compression engine.
-- un-package :: take a packed message and return a unpacked -- throw
-     an error if signature verification or decryption fails
-- handle incoming :: takes a function to call on each incoming
-     message (after decompression and un-packaging)
+# Notes                                                      -*- org -*-
+#+Options: ^:nil
 
 * Notes
 ** Relevant Links
@@ -261,3 +87,31 @@ recipient, yet they can still efficiently query a server for those
 such messages (i.e., either through providing some sort of homomorphic
 comparison key, or a black box function which the server can run to
 check).
+* Tasks [0/1]
+** TODO start to form this idea in an RFC format
+- nroff
+
+*** RFC standard sections
+Primary goal: clear, unambiguous technical prose.
+(see RFC 793)
+
+should start with (1) introduction
+
+required sections
+- Security Considerations
+- IANA Considerations
+
+* Library
+What would application writers want in an API?
+
+Should the API handle indexing/searching or should this be left up to
+the servers (this question can probably wait)?
+
+Both clients and servers.
+- package :: from JSON message to signed or encrypted and ready for
+     dumping through an external compression engine.
+- un-package :: take a packed message and return a unpacked -- throw
+     an error if signature verification or decryption fails
+- handle incoming :: takes a function to call on each incoming
+     message (after decompression and un-packaging)
+

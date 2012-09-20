@@ -3,9 +3,13 @@ HOST=moons.cs.unm.edu:public_html/data/
 all: aur
 .PHONY: package package-upload aur aur-upload clean
 
-package dissemination.tar.gz: clean
+dissemination.txt: dissemination.nroff
+	groff -Tascii $< > $@
+
+package dissemination.tar.gz: clean dissemination.txt
 	tar --exclude=".git" --exclude=".gitignore" --exclude="src/c" \
 	--exclude="Makefile" --exclude="dissemination.tar.gz" \
+	--exclude="dissemination.nroff" \
 	--transform='s:./:dissemination/:' \
 	-czf dissemination.tar.gz ./*
 
@@ -26,4 +30,4 @@ clean:
 	rm -rf pkg/ src/dissemination/
 
 real-clean:
-	rm -rf *.tar.gz *.tar.xz
+	rm -rf *.tar.gz *.tar.xz *.txt

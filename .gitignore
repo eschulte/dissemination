@@ -1,6 +1,10 @@
 **~
+**.txt
 **.html
 **.tar.gz
 **.tar.xz
 pkg/
 src/dissemination/
+
+# an ignored directory to hold misc stuff
+stuff

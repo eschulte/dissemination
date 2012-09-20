@@ -1,0 +1,221 @@
+.pl 10.0i                                               \" -*- nroff -*-
+.po 0
+.ll 7.2i
+.lt 7.2i
+.nr LL 7.2i
+.nr LT 7.2i
+.ds RF FORMFEED[Page %]
+.ds LH Internet Draft
+.\"   --> Header/footers: Set short title, author(s), and dates:
+.ds Information Dissemination            \" <Short title>
+.ds Eric Schulte                         \" <Authors>
+.ds September 19, 2012                   \" <Submission date>
+.ds NA                                   \" <Expiration date>
+.hy 0
+.ad l
+.nf
+.\" 5678901234567 check 72 column width 12345678901234567890123456789012
+Draft                                                       Eric Schulte
+<dissemination.txt>                                     Graduate Student
+Category                                        University of New Mexico
+Expires                                               September 19, 2012
+
+.ce
+A System/Protocol for distributed information dissemination
+.ce
+<dissemination.txt>
+
+.in 3              \"  Basic indent for text is 3 spaces
+.ti 0              \"  "Temporary indent" for next line: 0 spaces
+Status of this Memo
+
+Distribution of this memo is unlimited.
+
+This is a very rough draft used mainly to allow organization and
+sharing of ideas.  Do whatever you want with this document, just don't
+remove the Copyright notice, and add yourself to the Copyright notice
+if you add content to the document.
+
+.ti 0
+Copyright Notice
+
+Copyright (c) Eric Schulte.  All rights reserved.
+
+.ti 0
+Abstract          \"  See: "Instructions to RFC Authors [RFC2223BIS]"
+
+A distributed system for the dissemination of messages.  The core of
+the system is a dynamic network of servers which share messages
+similar in architecture to Usenet.  Messages are serialized as JSON
+hashes.  Messages may be signed or encrypted using GPG public and
+private keys.  The primary goals are simplicity, security, privacy,
+and robust operation.
+
+.bp
+.in 0
+Table of Contents
+
+.nf
+   1. Introduction ....................................................2
+   2. Users ...........................................................?
+   3. Structure of Messages ...........................................?
+     3.1. Signing and Encryption ......................................?
+     3.2. Other Optional Keys? ........................................?
+     3.3. Internal References .........................................?
+   4. Distribution of Messages ........................................?
+   5. Organization and discovery of Messages ..........................?
+   6. Security Considerations .........................................?
+   7. IANA Considerations .............................................?
+
+.fi
+.in 3 
+.ti 0
+1. Introduction
+
+A distributed system through which named or anonymous users can
+disseminate open, signed, or encrypted messages.
+
+Think of a distributed version of twitter, running over a network of
+distributed servers similar to Usenet's architecture, using JSON as
+the data exchange format and GPG public and private keys for
+verification and encryption.
+
+.ti 0
+2. Overview
+.\"     The RFC Editor puts .ti 0 before each section and subsection title.
+
+.ti 0
+2.1.  Users
+
+All messages are either anonymous or have a GPG signature.  There need
+be no idea of a "user" in the dissemination system beyond GPG
+signatures and signatories.  Maybe it would be worthwhile to add a
+distributed users table to be distributed between servers, such a
+table could associate each user with some of the following.
+
+.in 9
+.ti 6
+o  unique short human readable and writable name
+.ti 6
+o  real name (must be optional if exists)
+.ti 6
+o  URL
+.ti 6
+o  arbitrary text
+.ti 6
+o  small picture
+.ti 6
+o  or arbitrary fields
+
+.in 3
+I kind of like the idea of not doing anything with users, but just
+letting the existing GPG web of trust system handle everything.
+
+.ti 0
+3 Structure of a Message
+
+A message is just a key-value store with some rules about which keys
+are required and when.
+
+.ti 0
+3.1 Signing and Encryption
+
+Will want signature and encryption to apply to as much of the message
+(including meta data) as possible.  What is the minimum required to
+show for each use case.
+
+Signed messages must contain the following keys but may include more.
+
+.in 6
+.nf
+KEY              DESCRIPTION
+\&keys             A JSON list of the keys which are signed.
+\&signatory        An identifier of the signatory readable by GPG.
+\&signature        An ASCII armor signature of the ordered values of
+                 keys.
+
+.in 3
+Encrypted messages contain exactly the following keys.
+
+.in 6
+.nf
+KEY              DESCRIPTION
+\&recipients       A list of the recipients
+\&encrypted        ASCII armor encrypted blob of arbitrary contents.
+
+.in 3
+Signed and Encrypted messages are like encrypted messages but they may
+contain a sender field, and the encrypted blob must also be signed by
+GPG.
+
+Anonymous messages may contain any valid JSON keys and values.
+
+.ti 0
+3.2 Other optional keys?
+
+Although no other keys would be required, which could be optional and
+useful?
+
+.in 6
+.nf
+KEY              DESCRIPTION
+\&date             To specify when the message was posted.
+\&TTL              Or "time to live" to specify when servers must
+                 delete any saved copies of the message.
+\&subject          Obviously this could be useful
+.in 3
+
+.ti 0
+3.3 Internal references
+
+There are times when you want to reference another part of the same
+message, e.g., when you want to include images to be references from
+an html portion.  What should the syntax be for this?  Are existing
+email mime rules sufficiently powerful enough to handle this?
+
+This should probably be set in the standard.
+
+.ti 0
+4 Distribution of Messages
+
+Along the same lines as Usenet.  Users connect to servers, and servers
+exchange information betwixt themselves.
+
+The biggest difference between this and usenet would be the
+expectation that the inter-server exchange is somewhat more
+timely/real-time, i.e., not just 2 batch transfers per day.
+
+All messages should be compressed when sent between servers or servers
+and clients.  Use gzip and gunzip to handle this encryption.
+
+.ti 0
+5 Organization and discovery of Messages
+
+Methods for the discovery of messages.
+
+.in 9
+.ti 6
+o  sender
+.ti 6
+o  keyword search
+.ti 6
+o  messages may target a user
+.ti 6
+o  messages may target a group
+.ti 6
+o  arbitrarily extensible headers?
+.ti 6
+o  servers can add their own discovery methods
+.in 3
+
+.ti 0
+6.  Security Considerations
+
+I'm sure there are some, but who knows what.  Any with JSON parsing or
+GPG signature verification or decryption could be issues here.  Many
+Usenet security issues could also be relevant here.
+
+.ti 0
+7.  IANA Considerations
+
+This section is required for any RFC, but I don't know what it is for.
