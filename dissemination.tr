@@ -1,20 +1,7 @@
-.pl 10.0i                                               \" -*- nroff -*-
-.po 0
-.ll 7.2i
+.ll 7.2i                                                \" -*- nroff -*-
 .lt 7.2i
 .nr LL 7.2i
 .nr LT 7.2i
-.ds RF FORMFEED[Page %]
-.ds LH Internet Draft
-.\"   --> Header/footers: Set short title, author(s), and dates:
-.ds Information Dissemination            \" <Short title>
-.ds Eric Schulte                         \" <Authors>
-.ds September 19, 2012                   \" <Submission date>
-.ds NA                                   \" <Expiration date>
-.hy 0
-.ad l
-.nf
-.\" 5678901234567 check 72 column width 12345678901234567890123456789012
 Draft                                                       Eric Schulte
 <dissemination.txt>                                     Graduate Student
 Category                                        University of New Mexico
@@ -51,24 +38,23 @@ hashes.  Messages may be signed or encrypted using GPG public and
 private keys.  The primary goals are simplicity, security, privacy,
 and robust operation.
 
-.bp
 .in 0
 Table of Contents
 
 .nf
-   1. Introduction ....................................................2
-   2. Users ...........................................................?
-   3. Structure of Messages ...........................................?
-     3.1. Signing and Encryption ......................................?
-     3.2. Other Optional Keys? ........................................?
-     3.3. Internal References .........................................?
-   4. Distribution of Messages ........................................?
-   5. Organization and discovery of Messages ..........................?
-   6. Security Considerations .........................................?
-   7. IANA Considerations .............................................?
+   1. Introduction
+   2. Users
+   3. Structure of Messages
+     3.1. Signing and Encryption
+     3.2. Other Optional Keys?
+     3.3. Internal References
+   4. Distribution of Messages
+   5. Organization and discovery of Messages
+   6. Security Considerations
+   7. IANA Considerations
 
 .fi
-.in 3 
+.in 3
 .ti 0
 1. Introduction
 
@@ -126,24 +112,28 @@ show for each use case.
 
 Signed messages must contain the following keys but may include more.
 
-.in 6
-.nf
-KEY              DESCRIPTION
-\&keys             A JSON list of the keys which are signed.
-\&signatory        An identifier of the signatory readable by GPG.
-\&signature        An ASCII armor signature of the ordered values of
-                 keys.
+.TS
+tab(:);
+r|l.
+Key:Description
+_
+keys:A JSON list of the keys which are signed.
+signatory:An identifier of the signatory readable by GPG.
+signature:An ASCII armor signature of the ordered values of keys.
+.TE
 
 .in 3
 Encrypted messages contain exactly the following keys.
 
-.in 6
-.nf
-KEY              DESCRIPTION
-\&recipients       A list of the recipients
-\&encrypted        ASCII armor encrypted blob of arbitrary contents.
+.TS
+tab(:);
+r|l.
+Key:Description
+_
+recipients:A list of the recipients
+encrypted:ASCII armor encrypted blob of arbitrary contents.
+.TE
 
-.in 3
 Signed and Encrypted messages are like encrypted messages but they may
 contain a sender field, and the encrypted blob must also be signed by
 GPG.
@@ -156,14 +146,16 @@ Anonymous messages may contain any valid JSON keys and values.
 Although no other keys would be required, which could be optional and
 useful?
 
-.in 6
-.nf
-KEY              DESCRIPTION
-\&date             To specify when the message was posted.
-\&TTL              Or "time to live" to specify when servers must
-                 delete any saved copies of the message.
-\&subject          Obviously this could be useful
-.in 3
+.TS
+tab(:);
+r|l.
+Key:Description
+_
+date:Specifies when the message was posted.
+TTL:Or "time to live" specifies the maximum time the
+   :\^message may be preserved by a server.
+subject:Obviously this could be useful.
+.TE
 
 .ti 0
 3.3 Internal references

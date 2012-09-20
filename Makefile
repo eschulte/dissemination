@@ -4,7 +4,7 @@ all: aur
 .PHONY: package package-upload aur aur-upload clean
 
 dissemination.txt: dissemination.tr
-	groff -Tascii $< > $@
+	groff -t -Tascii $< > $@
 
 package dissemination.tar.gz: clean dissemination.txt
 	tar --exclude=".git" --exclude=".gitignore" --exclude="src/c" \
