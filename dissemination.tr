@@ -111,17 +111,20 @@ show for each use case.
 
 Signed messages must contain the following keys but may include more.
 
+.in 3
 .TS
 tab(:);
 r|l.
 Key:Description
 _
-keys:JSON array of the keys in the order they are signed.
+keys:JSON array of the keys in the order
+    :\^they are signed.
 signatory:Identifier of the signatory readable by GPG.
-signature:ASCII armor signature of the concatenated values of keys.
+signature:ASCII armor signature of the concatenated
+         :\^values of keys.
 .TE
 
-.in 3
+
 Encrypted messages contain exactly the following keys.
 
 .TS
@@ -130,7 +133,8 @@ r|l.
 Key:Description
 _
 recipients:A list of the recipients
-encrypted:ASCII armor encrypted blob of arbitrary contents.
+encrypted:ASCII armor encrypted blob of arbitrary
+         :\^contents.
 .TE
 
 Signed and Encrypted messages are like encrypted messages but they may
