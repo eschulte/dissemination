@@ -1,0 +1,11 @@
+#!/bin/bash
+#
+# Usage: dis-shell command
+# To be used as a login shell for limited dis operations
+#
+if [ -f "/etc/profile"   ];then source "/etc/profile";fi
+if [ -f "$HOME/.profile" ];then source "$HOME/.profile";fi
+. $(dirname $0)/dis-common
+export DIS_BASE="$DIS_BASE"
+shift
+dis-read $@
