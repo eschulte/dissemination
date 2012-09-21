@@ -25,7 +25,7 @@ aur dissemination-0.1-1.src.tar.gz: dissemination.tar.gz
 	makepkg -f --source; \
 	sed -i "s/^md5sums.*$$/md5sums=('placeholder')/" PKGBUILD;
 
-aur-upload: package-upload dissemination-0.1-1.src.tar.gz
+aur-upload: dissemination-0.1-1.src.tar.gz package-upload
 	scp $< $(HOST)
 
 clean:
