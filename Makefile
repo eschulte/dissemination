@@ -1,13 +1,14 @@
+GROFF=groff -t -mm -Tascii
 HOST=moons.cs.unm.edu:public_html/data/
 
 all: aur
 .PHONY: package package-upload aur aur-upload clean doc
 
 doc: dissemination.tr
-	groff -t -Tascii $<|less
+	$(GROFF) $<|less
 
 dissemination.txt: dissemination.tr
-	groff -t -Tascii $< > $@
+	$(GROFF) $< > $@
 
 package dissemination.tar.gz: clean dissemination.txt
 	tar --exclude=".git" --exclude=".gitignore" --exclude="src/c" \
