@@ -68,6 +68,6 @@ else
     RECIP_STR="${RECIPIENTS[0]}";
     # TODO: handle multiple recipients
     echo -n "{"
-    if [ -z "$HIDE" ];then echo -n "\"recipients\":[$RECIP_STR], " fi
+    if [ -z "$HIDE" ];then echo -n "\"recipients\":[$RECIP_STR], "; fi
     echo -n "\"encrypted\":$(quote "$(encrypt $HIDE "$RECIPIENTS" "$JSON")")}"
 fi
