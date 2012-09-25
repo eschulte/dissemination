@@ -6,11 +6,11 @@ A System for distributed information dissemination
 .H 1 "Abstract"    \"  See: "Instructions to RFC Authors [RFC2223BIS]"
 
 A distributed system for the dissemination of messages.  The core of
-the system is a dynamic network of servers which share messages
-similar in architecture to Usenet.  Messages are serialized as JSON
-hashes.  Messages may be signed or encrypted using GPG public and
-private keys.  The primary goals are simplicity, security, privacy,
-and robust operation.
+the system is a loose network of servers which share messages similar
+in architecture to Usenet.  Messages are serialized as JSON hashes.
+Messages are signed or encrypted using GPG public and private keys.
+The primary goals are simplicity, security, privacy, and robust
+operation.
 
 .H 1 "Introduction"
 A distributed system through which named or anonymous users can
@@ -60,10 +60,14 @@ are required and when.
 
 .H 3 "Signing and Encryption"
 
-Will want signature and encryption to apply to as much of the message
-(including meta data) as possible.  What is the minimum required to
-show for each use case.
+Signatures and encryption should apply across as much of each message
+as possible (e.g., date, sender, and recipients, as well as contents).
+The following delimits the minimum required keys for each of the three
+main use cases; signed messages, signed and encrypted messages, and
+anonymous messages.
 
+.BL
+.LI
 Signed messages must contain the following keys but may include more.
 
 .TS
@@ -73,13 +77,14 @@ Key:Description
 _
 keys:JSON array of the keys in the order
     :\^they are signed.
-signatory:Identifier of the signatory readable by GPG.
+signatory:Identifier of the signatory readable by
+         :\^GPG.
 signature:ASCII armor signature of the concatenated
          :\^values of keys.
 .TE
 
-
-Encrypted messages contain exactly the following keys.
+.LI
+Encrypted messages must contain exactly the following keys.
 
 .TS
 tab(:);
@@ -91,11 +96,14 @@ encrypted:ASCII armor encrypted blob of arbitrary
          :\^contents.
 .TE
 
+.LI
 Signed and Encrypted messages are like encrypted messages but they may
 contain a sender field, and the encrypted blob must also be signed by
 GPG.
 
+.LI
 Anonymous messages may contain arbitrary JSON keys and values.
+.EL
 
 .H 3 "Other optional keys?"
 
@@ -155,6 +163,16 @@ arbitrarily extensible headers?
 servers can add their own discovery methods
 .EL
 
+.H 1 "Robustness"
+
+Robustness of operation include continued operation of the system as a
+whole, and persistence of individual messages.  Both are attained
+through spatial distribution and the lack of single points of failure.
+All servers are peers, and each server is capable of serving any
+message.  There is no single location at which a message exists, so to
+remove a message from the system every copy of the message (server
+side or client side) must be removed from the system.
+
 .H 1 "Privacy Considerations"
 
 GPG allows for the encryption of messages sent between users.
@@ -165,7 +183,7 @@ greatly increase privacy over email (which is normally unencrypted)
 and other communication systems in which servers must be trusted with
 private contents.
 
-.H 2 "Communication Meta-information"
+.H 2 "Privacy of Meta-information"
 
 The meta-information of the communication (who communicated with who
 and when) is an increasingly common target of surveillance.  Such

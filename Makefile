@@ -1,4 +1,4 @@
-GROFF=groff -t -mm -Tascii
+GROFF=groff -t -mm -Tutf8
 HOST=moons.cs.unm.edu:public_html/data/
 
 all: aur
