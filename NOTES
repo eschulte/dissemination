@@ -81,6 +81,12 @@ least one signature in the web of trust or something.
 ** GPGME -- the GPG C API
 for a reference implementation, assuming we don't want to just call
 gpg on the command line.  See [[info:gpgme#Top]].
+** TODO read about "homologous encryption" and "shared secrets"
+with respect to GPG public/private key pairs.
+
+** TODO look into GPG's "--hidden-recipient" option.
+Does this do anything more than simply encrypt the recipient's name?
+
 ** TODO How to hide recipients on encrypted messages
 s.t. only a recipient of the messages can see that they are a
 recipient, yet they can still efficiently query a server for those

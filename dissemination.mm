@@ -20,7 +20,12 @@ Think of this as a distributed twitter, running on top of Usenet's
 architecture, using JSON as the data exchange format and GPG public
 and private keys for user authentication and encryption.
 
-.H 1 "Overview"
+.H 1 "Technical Overview"
+
+The main components of this system are \fBusers\fR, \fBmessages\fR,
+and \fBservers\fR.  Users share messages between each other, and
+servers are used to transport and store messages.  Each of these
+components will be addressed below.
 
 .H 2 "Users"
 
@@ -48,12 +53,12 @@ or arbitrary fields
 I kind of like the idea of not doing anything with users, but just
 letting the existing GPG web of trust system handle everything.
 
-.H 1 "Structure of a Message"
+.H 2 "Messages"
 
 A message is just a key-value store with some rules about which keys
 are required and when.
 
-.H 2 "Signing and Encryption"
+.H 3 "Signing and Encryption"
 
 Will want signature and encryption to apply to as much of the message
 (including meta data) as possible.  What is the minimum required to
@@ -92,7 +97,7 @@ GPG.
 
 Anonymous messages may contain arbitrary JSON keys and values.
 
-.H 2 "Other optional keys?"
+.H 3 "Other optional keys?"
 
 Although no other keys would be required, which could be optional and
 useful?
@@ -108,7 +113,7 @@ TTL:Or "time to live" specifies the maximum time
 subject:Obviously this could be useful.
 .TE
 
-.H 2 "Internal references"
+.H 3 "Internal references"
 
 There are times when you want to reference another part of the same
 message, e.g., when you want to include images to be references from
@@ -117,7 +122,9 @@ email mime rules sufficiently powerful enough to handle this?
 
 This should probably be set in the standard.
 
-.H 1 "Distribution of Messages"
+.H 2 "Servers"
+
+.H 3 "Distribution of Messages"
 
 Along the same lines as Usenet.  Users connect to servers, and servers
 exchange information betwixt themselves.
@@ -129,7 +136,7 @@ timely/real-time, i.e., not just 2 batch transfers per day.
 All messages should be compressed when sent between servers or servers
 and clients.  Use gzip and gunzip to handle this encryption.
 
-.H 1 "Organization and discovery of Messages"
+.H 3 "Organization and discovery of Messages"
 
 Methods for the discovery of messages.
 
@@ -150,26 +157,32 @@ servers can add their own discovery methods
 
 .H 1 "Privacy Considerations"
 
+GPG allows for the encryption of messages sent between users.
+Currently the only way to target a message at a recipient is to
+encrypt the message for that recipient.  By requiring the use of GPG
+encryption of messages on the client side this framework should
+greatly increase privacy over email (which is normally unencrypted)
+and other communication systems in which servers must be trusted with
+private contents.
+
 .H 2 "Communication Meta-information"
 
-The meta-information of communication consisting of records of who
-communicated with who at what times is an increasingly popular target
-of surveillance.  Governments have requested such records from
-twitter, and since the requested information does not include the
-contents of the communication the requests are subject to less strict
-legal prohibitions.
+The meta-information of the communication (who communicated with who
+and when) is an increasingly common target of surveillance.  Such
+information is often easier to collect without a warrant as it does
+not include the contents communication.
 
 Is there a way to send an encrypted message to a recipient, without
 exposing either the identity of the sender or of the recipient?  In a
 system with potentially malicious servers, this question reduces to
-the search for a technique by which a user can both
+the search for a technique by which a user can both;
 
 .AL
 .LI
-Search through the messages on a server to identify which messages are
-encrypted for the user in question.
+search through the messages on a server to identify which messages are
+encrypted for the user in question, and
 .LI
-Download messages from a server anonymously.
+download messages from a server anonymously.
 .LE
 
 Anonymous search seems like it could be a difficult problem.  The
@@ -178,23 +191,19 @@ recipients in such a way that they can only be decrypted by the
 recipients (this can be done with standard GPG).  However, as it is
 unfeasible for the user to decrypt \fBevery\fR message on a public
 server there must be a way for a server to perform the search for the
-recipient without knowing either (1) the recipient name being searched
-for or (2) the lists of recipient names in each message.
+recipient without knowing either (1) the encrypted search term or (2)
+the encrypted contents (e.g., list of recipients) being searched.
 
-How about using homologous encryption?  The sender encrypts and the
-recipient each have access to their own private keys, and the other's
-public key.  Is this enough shared information for the sender and
-recipient to encrypt some token (probably the recipient's name) using
-a form of homologous encryption, s.t., recipient can submit her
-encrypted token to the server and the server can search for a matching
-token in any of its files without having access to the value of the
-token?
-
-TODO: search for "homologous encryption" and "shared secrets" with
-respect to GPG public/private key pairs.
-
-TODO: look into GPG's "--hidden-recipient" option.  Does this do
-anything more than simply encrypt the recipient's name?
+How about using homologous encryption?  The sender and the recipient
+each have access to their own private keys, and the other's public
+key.  Is this enough shared information for the sender and recipient
+to encrypt some token (say the recipient's name) homologously, such
+that; (1) the recipient can submit her encrypted token to the server,
+(2) the server can search for a matching token across encrypted fields
+in multiple messages without any knowledge of the value of the token,
+and ideally (3) the server can not encrypt a term (such as the
+recipients name, or a banned search term) and then search for that
+encrypted term.
 
 .H 1 "Security Considerations"
 
