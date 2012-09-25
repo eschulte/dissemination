@@ -4,10 +4,10 @@ HOST=moons.cs.unm.edu:public_html/data/
 all: aur
 .PHONY: package package-upload aur aur-upload clean doc
 
-doc: dissemination.tr
+doc: dissemination.mm
 	$(GROFF) $<|less
 
-dissemination.txt: dissemination.tr
+dissemination.txt: dissemination.mm
 	$(GROFF) $< > $@
 
 package dissemination.tar.gz: clean dissemination.txt
