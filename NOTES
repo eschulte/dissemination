@@ -1,7 +1,7 @@
 # Notes                                                      -*- org -*-
 #+Options: ^:nil
 
-* Notes
+* Notes and Tasks [0/3]
 ** Relevant Links
 *** Twitter-like services
 - http://www.twhirl.org/
@@ -81,13 +81,19 @@ least one signature in the web of trust or something.
 ** GPGME -- the GPG C API
 for a reference implementation, assuming we don't want to just call
 gpg on the command line.  See [[info:gpgme#Top]].
-** How to hide recipients on encrypted messages
+** TODO How to hide recipients on encrypted messages
 s.t. only a recipient of the messages can see that they are a
 recipient, yet they can still efficiently query a server for those
 such messages (i.e., either through providing some sort of homomorphic
 comparison key, or a black box function which the server can run to
 check).
-* Tasks [0/1]
+** TODO links
+Check these out, all from [[http://jacquesmattheij.com/the-pendulum-swings-again][this article]]
+- http://en.wikipedia.org/wiki/Trusted_computing
+- http://en.wikipedia.org/wiki/Free_software_movement
+- http://en.wikipedia.org/wiki/Phil_Zimmermann
+- http://www.fourmilab.ch/documents/digital-imprimatur/
+
 ** TODO start to form this idea in an RFC format
 - nroff
 
