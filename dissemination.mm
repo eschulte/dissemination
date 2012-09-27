@@ -25,15 +25,15 @@ and private keys for user authentication and encryption.
 The main components of this system are \fBusers\fR, \fBmessages\fR,
 and \fBservers\fR.  Users share messages between each other, and
 servers are used to transport and store messages.  Each of these
-components will be addressed below.
+components are addressed below.
 
 .H 2 "Users"
 
 All messages are either anonymous or have a GPG signature.  There need
 be no idea of a "user" in the dissemination system beyond GPG
-signatures and signatories.  Maybe it would be worthwhile to add a
-distributed users table to be distributed between servers, such a
-table could associate each user with some of the following.
+signatures and signatories.  However, it may be worthwhile to add a
+distributed users table, such a table could associate each user with
+some of the following.
 
 .BL
 .LI
@@ -55,20 +55,21 @@ letting the existing GPG web of trust system handle everything.
 
 .H 2 "Messages"
 
-A message is just a key-value store with some rules about which keys
-are required and when.
+A message is a JSON key-value dictionary with some rules about which
+keys are required and when.
 
 .H 3 "Signing and Encryption"
 
 Signatures and encryption should apply across as much of each message
-as possible (e.g., date, sender, and recipients, as well as contents).
+as possible (e.g., date, sender, and recipients, not just contents).
 The following delimits the minimum required keys for each of the three
-main use cases; signed messages, signed and encrypted messages, and
-anonymous messages.
+possible message types; signed messages, signed and encrypted
+messages, and anonymous messages.
 
 .BL
 .LI
-Signed messages must contain the following keys but may include more.
+Signed messages must contain the following, but in addition may
+include any other arbitrary key-value pairs.
 
 .TS
 tab(:);
@@ -84,7 +85,9 @@ signature:ASCII armor signature of the concatenated
 .TE
 
 .LI
-Encrypted messages must contain exactly the following keys.
+Encrypted messages must contain exactly the following keys.  The value
+of the encrypted portion would likely be another JSON key-value store
+holding any arbitrary key-value pairs.
 
 .TS
 tab(:);
@@ -102,23 +105,25 @@ contain a sender field, and the encrypted blob must also be signed by
 GPG.
 
 .LI
-Anonymous messages may contain arbitrary JSON keys and values.
+Anonymous messages may contain any arbitrary JSON keys-value pairs.
 .EL
 
-.H 3 "Other optional keys?"
+.H 3 "Standard keys"
 
-Although no other keys would be required, which could be optional and
-useful?
+Only the encryption and signature keys mentioned above are required
+there are some standard keys.  The following are recommended as
+standard key names for common message components.  All are optional.
 
 .TS
 tab(:);
 r|l.
 Key:Description
 _
+contents:The actual content of the message.
 date:Specifies when the message was posted.
 TTL:Or "time to live" specifies the maximum time
    :\^the message may be preserved by a server.
-subject:Obviously this could be useful.
+subject:A brief subject or title.
 .TE
 
 .H 3 "Internal references"
@@ -126,11 +131,14 @@ subject:Obviously this could be useful.
 There are times when you want to reference another part of the same
 message, e.g., when you want to include images to be references from
 an html portion.  What should the syntax be for this?  Are existing
-email mime rules sufficiently powerful enough to handle this?
+email mime rules sufficiently powerful to handle this?
 
-This should probably be set in the standard.
+Does this need to be specified in the standard?
 
 .H 2 "Servers"
+
+Server distribute, persist and provide for discovery and download of
+messages.
 
 .H 3 "Distribution of Messages"
 
@@ -143,6 +151,12 @@ timely/real-time, i.e., not just 2 batch transfers per day.
 
 All messages should be compressed when sent between servers or servers
 and clients.  Use gzip and gunzip to handle this encryption.
+
+.H 3 "Message persistence"
+
+Servers are under no obligation to store messages for any length of
+time.  The only requirement is that the TTL key of any message is
+respected if present.
 
 .H 3 "Organization and discovery of Messages"
 

@@ -22,5 +22,5 @@ package() {
   mkdir -p "$pkgdir/usr/bin/"
   install -D src/sh/* "$pkgdir/usr/bin/"
   install -Dm644 dissemination.txt "$pkgdir/usr/share/doc/dissemination/dissemination.txt"
-  install -Dm644 COPYING "$pkgdir/usr/share/licenses/dissemination/LICENSE"
+  install -Dm644 COPYING "$pkgdir/usr/share/licenses/dissemination/COPYING"
 } 
