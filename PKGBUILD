@@ -17,10 +17,7 @@ build() {
 }
 
 package() {
-  cd "$srcdir/$pkgname/"
-
-  mkdir -p "$pkgdir/usr/bin/"
-  install -D src/sh/* "$pkgdir/usr/bin/"
-  install -Dm644 dissemination.txt "$pkgdir/usr/share/doc/dissemination/dissemination.txt"
-  install -Dm644 COPYING "$pkgdir/usr/share/licenses/dissemination/COPYING"
+  cd "$srcdir/$pkgname"
+  make DESTDIR="$pkgdir" install
+  make DESTDIR=$pkgname install
 } 

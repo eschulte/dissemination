@@ -43,7 +43,13 @@ messages_to_html(){
     done
 }
 
-if [ -z "${params[hash]}" ];then
+if [ ! -z "${params[doc]}" ];then
+cat <<EOF
+Content-type: text/plain
+
+$(cat "$0"|sed -n '/^DOC:/,$p'|tail -n +2)
+EOF
+elif [ -z "${params[hash]}" ];then
 cat <<EOF
 Content-type: text/html
 
@@ -71,3 +77,6 @@ Content-type: text/json
 $(echo "${params[hash]}"|dis-read -|head -1)
 EOF
 fi
+
+exit 0
+DOC:

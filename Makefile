@@ -1,20 +1,30 @@
-GROFF=groff -t -mm -Tutf8
+GROFF=groff -t -mm -Tascii -P-cbu
 HOST=moons.cs.unm.edu:public_html/data/
+BINDIR=$(DESTDIR)/usr/bin/
+DOCDIR=$(DESTDIR)/usr/share/doc/dissemination/
+LICDIR=$(DESTDIR)/usr/share/liscences/dissemination/
 
 all: aur
-.PHONY: package package-upload aur aur-upload clean doc
+.PHONY: package package-upload aur aur-upload clean doc install
 
 doc: dissemination.mm
 	$(GROFF) $<|less
 
 dissemination.txt: dissemination.mm
-	$(GROFF) $< > $@
+	DOC="$$($(GROFF) $<)"; \
+	echo "$$DOC"|tail -n -66 > $@; \
+	echo "$$DOC"|head -n -66 >> $@;
+
+install: dissemination.txt
+	mkdir -p $(BINDIR) $(DOCDIR) $(LICDIR); \
+	install -D src/sh/* $(BINDIR); \
+	cat dissemination.txt >> $(BINDIR)messages.cgi; \
+	install -Dm644 dissemination.txt $(DOCDIR)dissemination.txt; \
+	install -Dm644 COPYING $(LICDIR)COPYING;
 
 package dissemination.tar.gz: clean dissemination.txt
 	tar --exclude=".git" --exclude=".gitignore" --exclude="src/c" \
-	--exclude="Makefile" --exclude="dissemination.tar.gz" \
-	--exclude="dissemination.nroff" \
-	--transform='s:./:dissemination/:' \
+	--exclude="*.tar.gz" --transform='s:./:dissemination/:' \
 	-czf dissemination.tar.gz ./*
 
 package-upload: dissemination.tar.gz
@@ -31,7 +41,7 @@ aur-upload: dissemination-0.1-1.src.tar.gz package-upload
 
 clean:
 	$(MAKE) -C src/c/ clean; \
-	rm -rf pkg/ src/dissemination/
+	rm -rf pkg/ src/dissemination/ *.txt
 
 real-clean:
-	rm -rf *.tar.gz *.tar.xz *.txt
+	rm -rf *.tar.gz *.tar.xz
