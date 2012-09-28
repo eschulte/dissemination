@@ -56,7 +56,10 @@ Content-type: text/html
 <html>
 <title>Disseminated Messages</title>
 <body>
-<p><a style="float:right" href="http://cs.unm.edu/~eschulte/data/dissemination-0.1-1.src.tar.gz">AUR package</a></p>
+<p style="float:right">
+<a href="?doc=yes">Documentation</a>
+<a href="http://cs.unm.edu/~eschulte/data/dissemination-0.1-1.src.tar.gz">AUR package</a>
+</p>
 <form method="GET" action="messages.cgi">
   <p>
     Search for <input type="text" name="grep" size="20" value="${params[grep]}">
