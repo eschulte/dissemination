@@ -43,11 +43,36 @@ messages_to_html(){
     done
 }
 
-if [ ! -z "${params[doc]}" ];then
+if [ ! -z "${params[submit]}" ];then
 cat <<EOF
-Content-type: text/plain
+Content-type: text/html
 
-$(cat "$0"|sed -n '/^DOC:/,$p'|tail -n +2)
+<html>
+<body>
+<pre>
+# With these tools installed you can do,
+echo "some message"|dis-pack|dis-send -s $(hostname)
+
+# Or without these tools the following will work for very simple messages.
+CONTENT="some message"
+LENGTH=\$(expr length "\$CONTENT")
+HASH=\$(echo "\"content\" \$length \$content"|sha1sum|cut -c-40)
+echo "{\\"keys\\":[\\"content\\"], \\"hash\\":\\"\$HASH\\", \\"content\\":\\"\$CONTENT\\"}" \\
+  |gzip \\
+  |netcat -c $(hostname) 4444
+<pre>
+</body>
+</html>
+EOF
+elif [ ! -z "${params[doc]}" ];then
+cat <<EOF
+Content-type: text/html
+
+<html>
+<body>
+<pre>$(cat "$0"|sed -n '/^DOC:/,$p'|tail -n +2)<pre>
+</body>
+</html>
 EOF
 elif [ -z "${params[hash]}" ];then
 cat <<EOF
@@ -56,10 +81,11 @@ Content-type: text/html
 <html>
 <title>Disseminated Messages</title>
 <body>
-<p style="float:right">
-<a href="?doc=yes">Documentation</a>
-<a href="http://cs.unm.edu/~eschulte/data/dissemination-0.1-1.src.tar.gz">AUR package</a>
-</p>
+<ul style="float:right">
+<li><a href="?submit=yes">How to Submit a Message</a></li>
+<li><a href="?doc=yes">Documentation</a></li>
+<li><a href="http://cs.unm.edu/~eschulte/data/dissemination-0.1-1.src.tar.gz">AUR package</a></li>
+</ul>
 <form method="GET" action="messages.cgi">
   <p>
     Search for <input type="text" name="grep" size="20" value="${params[grep]}">
