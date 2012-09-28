@@ -11,9 +11,7 @@ doc: dissemination.mm
 	$(GROFF) $<|less
 
 dissemination.txt: dissemination.mm
-	DOC="$$($(GROFF) $<)"; \
-	echo "$$DOC"|tail -n -66 > $@; \
-	echo "$$DOC"|head -n -66 >> $@;
+	$(GROFF) $< > $@
 
 install: dissemination.txt
 	mkdir -p $(BINDIR) $(DOCDIR) $(LICDIR); \
