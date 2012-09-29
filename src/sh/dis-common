@@ -31,6 +31,7 @@ options(){
 }
 
 sha1(){
+    # TODO: update to reflect the new hashing described in the docs
     local content="$@";
     local length=$(expr length "$content");
     echo "\"content\" $length $content"|sha1sum|cut -c-40

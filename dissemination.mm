@@ -62,9 +62,16 @@ keys are required and when.
 
 Signatures and encryption should apply across as much of each message
 as possible (e.g., date, sender, and recipients, not just contents).
-The following delimits the minimum required keys for each of the three
-possible message types; signed messages, signed and encrypted
-messages, and anonymous messages.
+
+Every message will be assigned a hash based on its contents.  This
+hash is calculated as the sha1sum of the JSON representation of the
+entire message in canonical order (meaning with the keys sorted).
+This hash should then be added to the top-level message HASH before
+storage or dissemination.
+
+In addition, the following delimits the minimum required keys for each
+of the three possible message types; signed messages, signed and
+encrypted messages, and anonymous messages.
 
 .BL
 .LI
