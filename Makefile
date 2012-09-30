@@ -41,5 +41,5 @@ clean:
 	$(MAKE) -C src/c/ clean; \
 	rm -rf pkg/ src/dissemination/ *.txt
 
-real-clean:
+real-clean: clean
 	rm -rf *.tar.gz *.tar.xz
