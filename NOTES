@@ -113,6 +113,26 @@ required sections
 - Security Considerations
 - IANA Considerations
 
+* Server Notes and Tasks [0/3]
+** TODO implement inter-server synchronization
+- runs off of a timer
+- uses pull and push (or zpull and zpush) to communicate messages
+
+** TODO decide on data exchange format
+- pure json, e.g.,
+  : pull ["e558f","fc3a2",...]
+
+- or simplified more command-line syntax
+  : pull e558f fc3a2
+
+- or both
+
+** TODO when to do compression
+maybe have a encrypted version of each action, e.g.,
+- zpush :: is followed by a compressed string of the pushed messages
+- zpull :: compresses its results
+- zgrep :: compresses its results
+
 * Library
 What would application writers want in an API?
 
