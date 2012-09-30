@@ -2,13 +2,13 @@ var net = require('net');
 var fs  = require ('fs');
 
 // utility
-function includes (obj, key){
+function includes(obj, key){
   return Object.keys(obj).indexOf(key) >= 0; }
 
 function str_begins(str, prefix){
   return str.substring(0,prefix.length) === prefix; }
 
-function trim (str) {
+function trim(str) {
   return str.replace(/^\s\s*/, '').replace(/\s\s*$/, ''); }
 
 // a file in which each line is a JSON message, this may change
@@ -21,7 +21,7 @@ fs.readFile('/home/eschulte/.dis-base', 'utf8', function(err,data){
     .map(function(msg){ all[msg.hash] = msg; })});
 
 // The server  supports the following actions:
-var serve = function(socket) {
+function serve(socket) {
   socket.on('data', function(data){
     var act      = data.toString('utf8').substr(0,4);
     var msg_data = trim(data.toString('utf8').substr(5));
@@ -34,7 +34,7 @@ var serve = function(socket) {
 
 // 1. push will read a message and add it to the server's local
 //    message list
-var push = function(socket, msg_data){
+function push(socket, msg_data){
   var message = JSON.parse(msg_data.toString('utf8'));
   var hash = message.hash;
   if(hash && (! includes(all, hash))){
@@ -43,7 +43,7 @@ var push = function(socket, msg_data){
 // 2. pull will read a hash prefix, if it uniquely identifies a
 //    message than that message will be returned, otherwise a failure
 //    message will be given.
-var pull = function(socket, msg_data){
+function pull(socket, msg_data){
   var matching = Object.keys(all).filter(function(key){
     return str_begins(key, msg_data); });
   if(matching.length == 1){
@@ -51,10 +51,17 @@ var pull = function(socket, msg_data){
 
 // 3. grep will read query and return a list of the hashes of all
 //    matching messages
-var grep = function(socket, msg_data){ socket.write("not supported"); };
+function grep(socket, msg_data){
+  // reads in a JSON hash of keys and grep terms
+  var query=JSON.parse(msg_data);
+  var mine = all;
+  for(key in Object.keys(obj)){
+    
+  }
+};
 
 // 4. bail on unknown action
-var bail = function(socket, act){
+function bail(socket, act){
   socket.write("unsupported action '"+act+"', try one of push/pull/grep"); }
 
 net.createServer(serve).listen(1337, "127.0.0.1");
