@@ -5,3 +5,6 @@ all: $(OBJECTS)
 
 %.js: %.coffee
 	coffee -c $<
+
+clean:
+	rm -f $(OBJECTS)

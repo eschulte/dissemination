@@ -39,6 +39,7 @@ aur-upload: dissemination-0.1-1.src.tar.gz package-upload
 
 clean:
 	$(MAKE) -C src/c/ clean; \
+	$(MAKE) -C src/js/ clean; \
 	rm -rf pkg/ src/dissemination/ *.txt
 
 real-clean: clean
