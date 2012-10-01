@@ -4,7 +4,14 @@ fs  = require 'fs'
 all = {}
 
 # config variables
-base_path='/home/eschulte/.dis-base'
+base_path     = process.env.npm_package_config_base_path
+host          = process.env.npm_package_config_host
+port          = process.env.npm_package_config_port
+sync_interval = process.env.npm_package_config_sync_interval
+push_servers  = process.env.npm_package_config_push_servers
+pull_servers  = process.env.npm_package_config_pull_servers
+max_pull_msgs = process.env.npm_package_config_max_pull_msgs
+max_push_msgs = process.env.npm_package_config_max_push_msgs
 
 # utility
 startsWith = (str,pre) -> str.substr(0,pre.length) == pre
@@ -57,10 +64,6 @@ bail = (socket) -> socket.end 'unsupported action\n'
 
 ## Timers
 
-# TODO: configuration for servers and sync_interval
-sync_interval = (1000*60*30)
-servers = [ {host:'localhost', port:'1337'} ]
-
 # Synchronize message list with remove servers
 sync = () ->
   servers.map (remote) ->
@@ -80,4 +83,4 @@ setInterval(sync, sync_interval)
 
 
 ## Run the server
-net.createServer(server).listen(1337, '127.0.0.1');
+net.createServer(server).listen(port, host);

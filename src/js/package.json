@@ -1,0 +1,28 @@
+{ "name":"dissemination"
+, "description":"A System for distributed information dissemination"
+, "author":"Eric Schulte <eric.schulte@gmx.com>"
+, "version":"0.1"
+, "keywords":
+  [ "json"
+  , "pgp"
+  , "gpg"
+  , "message"
+  , "distributed"
+  , "encryption"
+  ]
+, "engines" : { "node" : "~0.8.11" }
+, "devDependencies": { "coffee-script": "~1.3.3" }
+, "os" : [ "!win32" ]
+, "private" : true
+, "scripts" : { "build" : "npm install . && make "}
+, "config":
+  { "base_path":"~/.dis-base"
+  , "host":"localhost"
+  , "port":4444
+  , "sync_interval":"-1"
+  , "push_servers":[]
+  , "pull_servers":[]
+  , "max_pull_size":"-1"
+  , "max_push_size":"-1"
+  }
+}
