@@ -1,7 +1,7 @@
 { "name":"dissemination"
 , "description":"A System for distributed information dissemination"
 , "author":"Eric Schulte <eric.schulte@gmx.com>"
-, "version":"0.1"
+, "version":"0.0.1"
 , "keywords":
   [ "json"
   , "pgp"
