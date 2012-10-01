@@ -7,17 +7,21 @@ all = {}
 base_path     = process.env.npm_package_config_base_path
 host          = process.env.npm_package_config_host
 port          = process.env.npm_package_config_port
-sync_interval = process.env.npm_package_config_sync_interval
+save_interval = process.env.npm_package_config_save_interval
 push_servers  = process.env.npm_package_config_push_servers
+push_interval = process.env.npm_package_config_push_interval
 pull_servers  = process.env.npm_package_config_pull_servers
+pull_interval = process.env.npm_package_config_pull_interval
 max_pull_msgs = process.env.npm_package_config_max_pull_msgs
 max_push_msgs = process.env.npm_package_config_max_push_msgs
 
 # utility
-startsWith = (str,pre) -> str.substr(0,pre.length) == pre
+Array.prototype.some  ?= (func) -> (return true  for it in @ when func it); false
+Array.prototype.every ?= (func) -> (return false for it in @ when not (func it)); true
 wrap = (it) -> if it instanceof Array then it else [it]
-Array.prototype.some ?= (func) -> (return true  for it in @ when func it); false
-Array.prototype.all  ?= (func) -> (return false for it in @ when not func it); true
+startsWith = (str,pre) -> str.substr(0,pre.length) == pre
+save = () ->
+  fs.writeFile base_path, ((JSON.stringify v for k,v of all).join '\n'), 'utf8'
 
 # read a file in which each line is a JSON message, this may change
 fs.readFile base_path, 'utf8', (err,data) ->
@@ -39,10 +43,8 @@ server = (socket) ->
 # 1. push will read a (list of) message(s) and add it to the server's
 #    local message list
 push = (socket, msgs) ->
-  # TODO: no messages pass this condition, even though they should
-  added = (all[msg.hash] = msg for msg in (wrap msgs) when not msg.hash of all).length
-  fs.writeFile base_path, ((JSON.stringify v for k,v of all).join) '\n', 'utf8'
-  socket.end "added #{added} messages"
+  added = (all[msg.hash] = msg for msg in (wrap msgs) when not (msg.hash of all)).length
+  socket.end  "added #{added} messages"
 
 # 2. pull will read a (list of) hash prefix(es), and return the
 #    messages identified by the hash(es)
@@ -54,8 +56,7 @@ pull = (socket, hashes) ->
 #    all matching messages
 grep = (socket, query) ->
   match_grep = (msg) ->
-    return false for k,v of query when not (new RegExp(v)).exec msg[k]
-    return true
+    Object.keys(query).every (key) -> (new RegExp(query[key])).exec msg[key]
   socket.end (JSON.stringify (k for k,v of all when match_grep v))+'\n'
 
 # 4. bail on unknown action
@@ -66,7 +67,7 @@ bail = (socket) -> socket.end 'unsupported action\n'
 
 # Synchronize message list with remove servers
 sync = () ->
-  servers.map (remote) ->
+  pull_servers.map (remote) ->
     socket = new net.Socket
     socket.connect(remote.port, remote.host)
     socket.write "grep {}"
@@ -79,8 +80,10 @@ sync = () ->
       socket.write "push "+JSON.stringify to_push
       socket.on data, (data) -> socket.destroy()
 
-setInterval(sync, sync_interval)
+setInterval(sync, pull_interval) if pull_interval >= 0
+setInterval(save, save_interval) if save_interval >= 0
 
 
 ## Run the server
 net.createServer(server).listen(port, host);
+console.log "server running on #{host}:#{port}"

@@ -14,15 +14,17 @@
 , "devDependencies": { "coffee-script": "~1.3.3" }
 , "os" : [ "!win32" ]
 , "private" : true
-, "scripts" : { "build" : "npm install . && make "}
+, "scripts" : { "install" : "make" }
 , "config":
-  { "base_path":"~/.dis-base"
+  { "base_path":"/srv/dis/base"
   , "host":"localhost"
   , "port":4444
-  , "sync_interval":"-1"
+  , "save_interval":-1
   , "push_servers":[]
+  , "push_interval":-1
   , "pull_servers":[]
-  , "max_pull_size":"-1"
-  , "max_push_size":"-1"
+  , "pull_interval":-1
+  , "max_pull_size":-1
+  , "max_push_size":-1
   }
 }
