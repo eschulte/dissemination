@@ -15,7 +15,7 @@ doc: dissemination.mm
 	if [ $(WIDTH) -lt 72 ];then \
 		$(GROFF) $<|cut -c6-|less; \
 	else \
-		$(GROFF) $<less; \
+		$(GROFF) $<|less; \
 	fi
 
 dissemination.txt: dissemination.mm
