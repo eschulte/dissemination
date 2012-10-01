@@ -1,4 +1,7 @@
-GROFF=groff -t -mm -Tascii -P-cbu
+GROFF=groff -t -mm -Tutf8
+GROFF_TXT=groff -t -mm -Tascii -P-cbu
+GROFF_PS=groff -t -mm
+WIDTH=$(shell stty size|awk '{print $$2}')
 HOST=moons.cs.unm.edu:public_html/data/
 BINDIR=$(DESTDIR)/usr/bin/
 DOCDIR=$(DESTDIR)/usr/share/doc/dissemination/
@@ -7,20 +10,31 @@ LICDIR=$(DESTDIR)/usr/share/liscences/dissemination/
 all: aur
 .PHONY: package package-upload aur aur-upload clean doc install
 
+#$(GROFF) -rLL=$(WIDTH)n -rLT=$(WIDTH) $<|less
 doc: dissemination.mm
-	$(GROFF) $<|less
+	if [ $(WIDTH) -lt 72 ];then \
+		$(GROFF) $<|cut -c6-|less; \
+	else \
+		$(GROFF) $<less; \
+	fi
 
 dissemination.txt: dissemination.mm
-	$(GROFF) $< > $@
+	$(GROFF_TXT) $< > $@
 
-install: dissemination.txt
+dissemination.ps: dissemination.mm
+	$(GROFF_PS) $< > $@
+
+dissemination.pdf: dissemination.ps
+	ps2pdf $<
+
+install:
 	mkdir -p $(BINDIR) $(DOCDIR) $(LICDIR); \
 	install -D src/sh/* $(BINDIR); \
-	cat dissemination.txt >> $(BINDIR)messages.cgi; \
-	install -Dm644 dissemination.txt $(DOCDIR)dissemination.txt; \
+	$(GROFF_TXT) >> $(BINDIR)messages.cgi; \
+	$(GROFF) dissemination.mm > $(DOCDIR)dissemination.txt; \
 	install -Dm644 COPYING $(LICDIR)COPYING;
 
-package dissemination.tar.gz: clean dissemination.txt
+package dissemination.tar.gz: clean
 	tar --exclude=".git" --exclude=".gitignore" --exclude="src/c" \
 	--exclude="*.tar.gz" --transform='s:./:dissemination/:' \
 	-czf dissemination.tar.gz ./*
@@ -40,7 +54,7 @@ aur-upload: dissemination-0.1-1.src.tar.gz package-upload
 clean:
 	$(MAKE) -C src/c/ clean; \
 	$(MAKE) -C src/js/ clean; \
-	rm -rf pkg/ src/dissemination/ *.txt
+	rm -rf pkg/ src/dissemination/ *.txt *.ps *.pdf
 
 real-clean: clean
 	rm -rf *.tar.gz *.tar.xz

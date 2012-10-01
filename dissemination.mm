@@ -33,7 +33,8 @@ All messages are either anonymous or have a GPG signature.  There need
 be no idea of a "user" in the dissemination system beyond GPG
 signatures and signatories.  However, it may be worthwhile to add a
 distributed users table, such a table could associate each user with
-some of the following.
+some of the following (although I like the idea of not doing anything
+with beyond what is provided by the existing GPG web of trust system).
 
 .BL
 .LI
@@ -43,20 +44,18 @@ real name (must be optional if exists)
 .LI
 URL
 .LI
-arbitrary text
-.LI
 small picture
 .LI
-or arbitrary fields
+other stuff...
+.LI
+arbitrary key-value pairs
 .EL
-
-I kind of like the idea of not doing anything with users, but just
-letting the existing GPG web of trust system handle everything.
 
 .H 2 "Messages"
 
-A message is a JSON key-value dictionary with some rules about which
-keys are required and when.
+A message is a JSON key-value store (sometimes called an object,
+record, struct, dictionary, map, hash or associative array) with some
+minimal rules about which keys are required and when.
 
 .H 3 "Signing and Encryption"
 
@@ -133,14 +132,21 @@ TTL:Or "time to live" specifies the maximum time
 subject:A brief subject or title.
 .TE
 
-.H 3 "Internal references"
+.H 3 "References (internal and external)"
 
 There are times when you want to reference another part of the same
 message, e.g., when you want to include images to be references from
 an html portion.  What should the syntax be for this?  Are existing
 email mime rules sufficiently powerful to handle this?
 
-Does this need to be specified in the standard?
+Similarly it may be that once message may want to reference the
+contents of another message (e.g., a reply, a discussion thread, or a
+reference to content which has a different signatory or is encrypted
+for a different subset of recipients).
+
+Some form of message reference (with both internal and external
+syntax) should be specified in the standard.  I currently have no
+strong feelings on the form or syntax of such references.
 
 .H 2 "Servers"
 
@@ -149,15 +155,17 @@ messages.
 
 .H 3 "Distribution of Messages"
 
-Along the same lines as Usenet.  Users connect to servers, and servers
-exchange information betwixt themselves.
+Users may upload and download messages to/from servers, and servers
+may exchange information betwixt themselves.
 
-The biggest difference between this and usenet would be the
-expectation that the inter-server exchange is somewhat more
-timely/real-time, i.e., not just 2 batch transfers per day.
+Unlike in Usenet it would not be expected that every message would
+eventually be represented on every server.  While hopefully some
+servers would seek to disseminate every generally distributed message
+in the system it would be possible to servers to be dedicated to
+particular topics or user groups and handle only related messages.
 
-All messages should be compressed when sent between servers or servers
-and clients.  Use gzip and gunzip to handle this encryption.
+There should be support for compressing and encrypting inter-server
+communication (e.g. via GZIP and SSL respectively).
 
 .H 3 "Message persistence"
 
@@ -182,6 +190,37 @@ messages may target a group
 arbitrarily extensible headers?
 .LI
 servers can add their own discovery methods
+.EL
+
+.H 3 "Possible types of servers"
+
+.BL
+.LI
+A "general" server would attempt to provide access to every publicly
+disseminated message.  Hopefully a collection of general servers would
+form the distributed core of this system and their contents would
+constitute the global public message contents.
+.LI
+A "topic" or "community" server may not perform any message exchange
+with other servers, or may only exchange messages with a specific
+topic or community of servers.  Such servers may only allow uploads of
+specific messages discriminated by signatory or perhaps by content or
+moderator.
+.LI
+A "personal" server may only post messages from a single signatory and
+may do no inter-server communication whatsoever.  Such a server could
+serve as a personal "home" on the web, like a homepage.
+
+Using message references numerous messages could be presented in a
+unified place (or page or view).  Such a personal presence on the web
+may have numerous advantages over a static home page.
+
+Every piece of content would be signed.  Content could easily be added
+through the addition of messages.  Messages encrypted for particular
+groups could be used to display different information to different
+groups of readers.  Such a personal message server could serve the
+same role as a Facebook page (at least as I understand Facebook, I've
+never used it myself).
 .EL
 
 .H 1 "Robustness"
