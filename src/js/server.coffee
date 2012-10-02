@@ -3,18 +3,15 @@ net = require 'net'
 fs  = require 'fs'
 
 # config variables
-base_path     = process.env.npm_package_config_base_path
+base          = process.env.npm_package_config_base
 host          = process.env.npm_package_config_host
 port          = process.env.npm_package_config_port
-pre_save_hook = process.env.npm_package_config_pre_save_hook
-post_save_hook = process.env.npm_package_config_post_save_hook
 save_interval = process.env.npm_package_config_save_interval
-sync_servers  = process.env.npm_package_config_sync_servers
 sync_interval = process.env.npm_package_config_sync_interval
 
 # read a file in which each line is a JSON message, this may change
 all = {}
-fs.readFile base_path, 'utf8', (err,data) ->
+fs.readFile base, 'utf8', (err,data) ->
   if err then throw err
   json = "[#{(data.replace(/\s\s*$/, '').replace /(\n|\r)/gm, ', ')}]"
   (JSON.parse json).map (msg) -> all[msg.hash] = msg
@@ -24,12 +21,14 @@ fs.readFile base_path, 'utf8', (err,data) ->
 Array.prototype.some  ?= (func) -> (return true  for it in @ when func it); false
 Array.prototype.every ?= (func) -> (return false for it in @ when not (func it)); true
 
+identity = (it) -> it
+
 wrap = (it) -> if it instanceof Array then it else [it]
 
 startsWith = (str,pre) -> str.substr(0,pre.length) == pre
 
 save = () ->
-  fs.writeFile base_path, ((JSON.stringify v for k,v of all).join '\n'), 'utf8'
+  fs.writeFile base, ((JSON.stringify v for k,v of all).join '\n'), 'utf8'
 
 send = (remote, msgs) ->
   socket.connect(remote.port, remote.host)
@@ -66,9 +65,9 @@ server = (socket) ->
 # read a (list of) message(s) and add them to the local message store
 push = (socket, msgs) ->
   msgs = (msgs = hook msgs for hook in pre_save_hook)
-  added = (all[msg.hash] = msg for msg in (wrap msgs) when not (msg.hash of all)).length
-  (hook msgs for hook in post_save_hook)
-  socket.end  "added #{added} messages"
+  added = (all[msg.hash] = msg for msg in (wrap msgs) when not (msg.hash of all))
+  (hook added for hook in post_save_hook)
+  socket.end  "added #{added.length} messages"
 
 # read a (list of) hash prefix(es) and return the identified messages
 pull = (socket, hashes) ->
@@ -89,7 +88,13 @@ bail = (socket) -> socket.end 'unsupported action\n'
 share = (msgs) -> (send remote, msgs for remote in sync_servers)
 
 # TODO: remove messages with unverrified signatures
-verify_signatures = (msgs) -> []
+verify_signatures = (msgs) -> throw "unimplemented"
+
+# customizable to reject messages which don't match hook functions
+pre_save_hook = [identity]
+
+# called on saved messages
+post_save_hook = []
 
 
 ## Start Timers

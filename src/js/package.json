@@ -16,13 +16,10 @@
 , "private" : true
 , "scripts" : { "install" : "make" }
 , "config":
-  { "base_path":"/srv/dis/base"
+  { "base":"/srv/dis/base"
   , "host":"localhost"
-  , "port":4444
-  , "pre_save_hook":[]
-  , "post_save_hook":[]
-  , "save_interval":-1
-  , "sync_servers":[]
-  , "sync_interval":-1
+  , "port": 4444
+  , "save_interval": -1
+  , "sync_interval": -1
   }
 }
