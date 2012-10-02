@@ -19,12 +19,10 @@
   { "base_path":"/srv/dis/base"
   , "host":"localhost"
   , "port":4444
+  , "pre_save_hook":[]
+  , "post_save_hook":[]
   , "save_interval":-1
-  , "push_servers":[]
-  , "push_interval":-1
-  , "pull_servers":[]
-  , "pull_interval":-1
-  , "max_pull_size":-1
-  , "max_push_size":-1
+  , "sync_servers":[]
+  , "sync_interval":-1
   }
 }

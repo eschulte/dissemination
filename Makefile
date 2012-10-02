@@ -51,6 +51,12 @@ aur dissemination-0.1-1.src.tar.gz: dissemination.tar.gz
 aur-upload: dissemination-0.1-1.src.tar.gz package-upload
 	scp $< $(HOST)
 
+src/js/README.md: dissemination.txt
+	cp $< $@
+
+npm: src/js/README.md
+	$(MAKE) -C src/js/ pack
+
 clean:
 	$(MAKE) -C src/c/ clean; \
 	$(MAKE) -C src/js/ clean; \

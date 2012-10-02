@@ -113,12 +113,14 @@ required sections
 - Security Considerations
 - IANA Considerations
 
-* Server Notes and Tasks [0/3]
+* Server Notes and Tasks [1/3]
 ** TODO implement inter-server synchronization
 - runs off of a timer
 - uses pull and push (or zpull and zpush) to communicate messages
 
-** TODO decide on data exchange format
+** DONE decide on data exchange format
+yup, pure json it is.
+
 - pure json, e.g.,
   : pull ["e558f","fc3a2",...]
 
