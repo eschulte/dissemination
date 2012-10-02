@@ -6,67 +6,58 @@ fs  = require 'fs'
 base          = process.env.npm_package_config_base
 host          = process.env.npm_package_config_host
 port          = process.env.npm_package_config_port
-save_interval = process.env.npm_package_config_save_interval
-sync_interval = process.env.npm_package_config_sync_interval
+sync_servers  = [{ host:"tortilla", port:4444 }]
 
 # read a file in which each line is a JSON message, this may change
 all = {}
 fs.readFile base, 'utf8', (err,data) ->
   if err then throw err
-  json = "[#{(data.replace(/\s\s*$/, '').replace /(\n|\r)/gm, ', ')}]"
-  (JSON.parse json).map (msg) -> all[msg.hash] = msg
+  try json = "[#{(data.replace(/\s\s*$/, '').replace /(\n|\r)/gm, ', ')}]"
+  catch err then console.error "error parsing database:#{err}"
+  total = (all[msg.hash] = msg for msg in (JSON.parse json)).length
+  console.log "loaded #{total} messages"
 
 
 ## Utility
 Array.prototype.some  ?= (func) -> (return true  for it in @ when func it); false
 Array.prototype.every ?= (func) -> (return false for it in @ when not (func it)); true
-
 identity = (it) -> it
-
 wrap = (it) -> if it instanceof Array then it else [it]
-
 startsWith = (str,pre) -> str.substr(0,pre.length) == pre
 
 save = () ->
+  console.log "saving"
   fs.writeFile base, ((JSON.stringify v for k,v of all).join '\n'), 'utf8'
 
 send = (remote, msgs) ->
-  socket.connect(remote.port, remote.host)
-  socket.write "push "+JSON.stringify msgs
-  socket.on data, (data) -> socket.destroy()
-
-# Synchronize message list with remove servers
-sync = () ->
-  sync_servers.map (remote) ->
-    socket = new net.Socket
-    socket.connect(remote.port, remote.host)
-    socket.write "grep {}" # to get a list of all remote hashes
-    socket.on data, (data) ->
-      theirs = (JSON.parse data)
-      to_pull = (hash for hash in theirs when not hash of all)
-      to_push = (hash for hash in all    when not hash of theirs)
-      socket.write "pull "+JSON.stringify to_pull
-      socket.on data, (data) -> (all[k] = v for k,v of (JSON.stringify data))
-      socket.write "push "+JSON.stringify to_push
-      socket.on data, (data) -> socket.destroy()
+  socket = net.createConnection remote, () ->
+    socket.write "push "+JSON.stringify msgs
+  socket.on 'data', (data) -> socket.end()
+  socket.on 'error', (err) ->
+    console.error "send(remote=#{JSON.stringify remote}): #{err}"
 
 
 ## Server
 server = (socket) ->
   socket.on 'data', (data) ->
     str      = data.toString('utf8')
-    msg_data = JSON.parse (str.substr 5)
+    try msg_data = JSON.parse (str.substr 5)
+    catch err then console.error "server parse error: #{err}"
     switch (str.substr 0, 4).toLowerCase()
       when 'push' then push socket, msg_data
       when 'pull' then pull socket, msg_data
       when 'grep' then grep socket, msg_data
       else bail socket
+  socket.on 'error', (err) -> console.error "server socket error: #{err}"
 
 # read a (list of) message(s) and add them to the local message store
 push = (socket, msgs) ->
-  msgs = (msgs = hook msgs for hook in pre_save_hook)
-  added = (all[msg.hash] = msg for msg in (wrap msgs) when not (msg.hash of all))
-  (hook added for hook in post_save_hook)
+  (msgs = hook msgs for hook in pre_save_hook)
+  added = []
+  for msg in (wrap msgs) when msg.hash and not (msg.hash of all)
+    added.push msg
+    all[msg.hash] = msg
+  (hook socket, added for hook in post_save_hook) if added.length > 0
   socket.end  "added #{added.length} messages"
 
 # read a (list of) hash prefix(es) and return the identified messages
@@ -85,21 +76,19 @@ bail = (socket) -> socket.end 'unsupported action\n'
 
 
 ## Hook functions
-share = (msgs) -> (send remote, msgs for remote in sync_servers)
+share = (socket, msgs) ->
+  for remote in sync_servers when not (remote.host == socket.host)
+    console.log "#{msgs.length} messages -> #{remote.host}:#{remote.port}"
+    send remote, msgs
 
-# TODO: remove messages with unverrified signatures
-verify_signatures = (msgs) -> throw "unimplemented"
+verify_signatures = (msgs) ->
+  throw "TODO: remove messages with unverrified signatures"
 
 # customizable to reject messages which don't match hook functions
 pre_save_hook = [identity]
 
 # called on saved messages
-post_save_hook = []
-
-
-## Start Timers
-setInterval(sync, sync_interval) if sync_interval >= 0
-setInterval(save, save_interval) if save_interval >= 0
+post_save_hook = [save, share]
 
 
 ## Run the server
