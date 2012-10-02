@@ -1,12 +1,14 @@
-# -*- coffee-tab-width:2 -*-
-net = require 'net'
+net = require 'net'                                 # -*- coffee-tab-width:2 -*-
 fs  = require 'fs'
 
 # config variables
-base          = process.env.npm_package_config_base
-host          = process.env.npm_package_config_host
-port          = process.env.npm_package_config_port
-sync_servers  = [{ host:"tortilla", port:4444 }]
+base           = process.env.npm_package_config_base
+host           = process.env.npm_package_config_host
+port           = process.env.npm_package_config_port
+config         = process.env.npm_package_config_config
+sync_servers   = [] # list of servers with which to share (in config)
+pre_save_hook  = [] # list of functions which may reject messages (in config)
+post_save_hook = [] # called on saved messages (in config)
 
 # read a file in which each line is a JSON message, this may change
 all = {}
@@ -19,8 +21,8 @@ fs.readFile base, 'utf8', (err,data) ->
 
 
 ## Utility
-Array.prototype.some  ?= (func) -> (return true  for it in @ when func it); false
-Array.prototype.every ?= (func) -> (return false for it in @ when not (func it)); true
+Array.prototype.some  ?= (f) -> (return true  for it in @ when f it); false
+Array.prototype.every ?= (f) -> (return false for it in @ when not (f it)); true
 identity = (it) -> it
 wrap = (it) -> if it instanceof Array then it else [it]
 startsWith = (str,pre) -> str.substr(0,pre.length) == pre
@@ -57,7 +59,7 @@ push = (socket, msgs) ->
   for msg in (wrap msgs) when msg.hash and not (msg.hash of all)
     added.push msg
     all[msg.hash] = msg
-  (hook socket, added for hook in post_save_hook) if added.length > 0
+  (hook added, socket for hook in post_save_hook) if added.length > 0
   socket.end  "added #{added.length} messages"
 
 # read a (list of) hash prefix(es) and return the identified messages
@@ -76,19 +78,16 @@ bail = (socket) -> socket.end 'unsupported action\n'
 
 
 ## Hook functions
-share = (socket, msgs) ->
+share = (msgs, socket) ->
   for remote in sync_servers when not (remote.host == socket.host)
     console.log "#{msgs.length} messages -> #{remote.host}:#{remote.port}"
     send remote, msgs
 
-verify_signatures = (msgs) ->
-  throw "TODO: remove messages with unverrified signatures"
+verify_signatures = (msgs) -> throw "TODO: verify signatures or remove"
 
-# customizable to reject messages which don't match hook functions
-pre_save_hook = [identity]
-
-# called on saved messages
-post_save_hook = [save, share]
+fs.exists config, (exists) ->
+  fs.readFile config, 'utf8', (err,data) ->
+    if err then console.error "error loading config: #{err}" else eval data
 
 
 ## Run the server

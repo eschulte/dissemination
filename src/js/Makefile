@@ -3,10 +3,14 @@ OBJECTS=$(SOURCES:.coffee=.js)
 
 .PHONY: run npm-pack
 
-all: $(OBJECTS)
+all: $(OBJECTS) config.js
 
 %.js: %.coffee
 	coffee -c $<
+
+config.js:
+	echo "// Holds optional cofiguration" > $@
+	echo "post_save_hook.push(save)"     >> $@
 
 README.md:
 	$(MAKE) -C ../../ src/js/README.md
