@@ -36,7 +36,6 @@ int main()
   gpgme_data_t SIG, CONTENT;
   gpgme_verify_result_t result;
   gpgme_signature_t sig;
-  /*
   const char* sig_str = "-----BEGIN PGP SIGNATURE-----\n"
     "Version: GnuPG v2.0.19 (GNU/Linux)\n"
     "\n"
@@ -48,7 +47,6 @@ int main()
     "OyU4jzhtDpGa+jeU8BGRnveiWQgn3Q0NBQnQmrt4rrbKcZAWbsEsfgkCFZhzqYI=\n"
     "=FGNI\n"
     "-----END PGP SIGNATURE-----\n";
-  */
   const char* content_str = "patton\n";
 
   /* setup */
@@ -58,7 +56,7 @@ int main()
   bail(gpgme_new(&ctx), "Creating a context");
 
   /* signature */
-  file_to_data(&SIG, "/tmp/sig");
+  str_to_data(&SIG, sig_str);
 
   /* content */
   str_to_data(&CONTENT, content_str);
