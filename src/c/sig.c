@@ -49,7 +49,7 @@ int main()
     "=FGNI\n"
     "-----END PGP SIGNATURE-----\n";
   */
-  const char* content_str = "patton";
+  const char* content_str = "patton\n";
 
   /* setup */
   init();
