@@ -81,6 +81,7 @@ least one signature in the web of trust or something.
 ** GPGME -- the GPG C API
 for a reference implementation, assuming we don't want to just call
 gpg on the command line.  See [[info:gpgme#Top]].
+
 ** TODO read about "homologous encryption" and "shared secrets"
 with respect to GPG public/private key pairs.
 
@@ -138,7 +139,8 @@ maybe have a encrypted version of each action, e.g.,
 ** TODO encryption in node
 If I need to write C bindings, take a look at https://github.com/chrisa/node-rsa
 
-Will need to wrap GPG.
+Will need to wrap GPG.  First get file:src/c/sig.c working, then
+write a node API.
 
 * Library
 What would application writers want in an API?
