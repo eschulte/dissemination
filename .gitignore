@@ -5,6 +5,7 @@
 **.html
 **.tar.gz
 **.tar.xz
+build/
 pkg/
 src/dissemination/
 
