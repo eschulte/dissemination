@@ -55,8 +55,8 @@ server = (socket) ->
 
 # read a (list of) message(s) and add them to the local message store
 push = (socket, msgs) ->
+  added = []; msgs = (wrap msgs)
   (msgs = hook msgs for hook in pre_save_hook)
-  added = []
   for msg in (wrap msgs) when msg.hash and not (msg.hash of all)
     added.push msg
     all[msg.hash] = msg
