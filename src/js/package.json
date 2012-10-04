@@ -19,7 +19,6 @@
 , "scripts" : { "install" : "make" }
 , "config":
   { "base":"/srv/dis/base"
-  , "host":"localhost"
   , "port": 4444
   , "config": "./config.js"
   }

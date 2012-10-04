@@ -4,7 +4,6 @@ gpg = require 'gpgme'
 
 # config variables
 base           = process.env.npm_package_config_base
-host           = process.env.npm_package_config_host
 port           = process.env.npm_package_config_port
 config         = process.env.npm_package_config_config
 sync_servers   = [] # list of servers with which to share (in config)
@@ -93,5 +92,5 @@ fs.exists config, (exists) ->
 
 
 ## Run the server
-net.createServer(server).listen(port, host);
-console.log "server running on #{host}:#{port}"
+net.createServer(server).listen(port);
+console.log "server running on port #{port}"
