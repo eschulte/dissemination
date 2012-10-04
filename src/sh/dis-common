@@ -91,12 +91,33 @@ get_array(){
 }
 
 to_array(){
-    local vals="$1";
-    ARRAY="$(shift "$vals")"
-    for val in $(echo "$vals");do
-        ARRAY+=", $val"
+    ARRAY="[]"
+    for element in $@;do
+        ARRAY="$(echo "$ARRAY"|jshon -s "$element" -i append)"
     done
-    echo "[$ARRAY]"
+    echo "$ARRAY"|tr -d '\n'|sed 's/]$/ ]/'
+}
+
+to_object(){
+    OBJECT="{}"
+    while [ ! -z "$1" ];do
+        OBJECT="$(echo "$OBJECT"|jshon -s "$2" -i "$1")"
+        shift; shift;
+    done
+    echo "$OBJECT"|tr -d '\n'|sed 's/}$/ }/'
+}
+
+show_msg(){
+    JSON="$1";
+    KEYS=$(keys)
+    echo "hash: $(get hash)"
+    if $(contains "$KEYS" signatory);then echo "signatory: $(get signatory)";fi
+    for key in $(keys|egrep -v "signature|signatory|content|hash");do
+        echo "$key: $(get "$key")"
+    done
+    echo ""
+    get content|sed 's/^/    /'
+    echo ""
 }
 
 ## Database helpers
