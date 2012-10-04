@@ -1,5 +1,6 @@
 net = require 'net'                                 # -*- coffee-tab-width:2 -*-
 fs  = require 'fs'
+gpg = require 'gpgme'
 
 # config variables
 base           = process.env.npm_package_config_base
@@ -83,7 +84,8 @@ share = (msgs, socket) ->
     console.log "#{msgs.length} messages -> #{remote.host}:#{remote.port}"
     send remote, msgs
 
-verify_signatures = (msgs) -> throw "TODO: verify signatures or remove"
+verify_signatures = (msgs) ->
+  (msg for msg in msgs when (not msg.signature) or gpg.verify(msg.signature, msg.content))
 
 fs.exists config, (exists) ->
   fs.readFile config, 'utf8', (err,data) ->
