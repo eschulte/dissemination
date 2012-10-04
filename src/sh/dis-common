@@ -34,7 +34,7 @@ sha1(){
     # TODO: update to reflect the new hashing described in the docs
     local content="$@";
     local length=$(expr length "$content");
-    echo "\"content\" $length $content"|sha1sum|cut -c-40
+    echo -n "\"content\" $length $content"|sha1sum|cut -c-40
 }
 
 ## GPG Helpers
@@ -53,13 +53,13 @@ gpg_name(){
 
 sign(){
     local gpg_name="$1"; local content="$2";
-    echo "$content"|gpg --batch --armor --detach-sign --local-user "$gpg_name"
+    echo -n "$content"|gpg --batch --armor --detach-sign --local-user "$gpg_name"
 }
 
 verify(){
     local signature="$1"; local signed_data="$2";
     echo "$signature" > /tmp/tmp.sig
-    echo "$signed_data" > /tmp/tmp.data
+    echo -e "$signed_data" > /tmp/tmp.data
     gpg --batch --verify /tmp/tmp.sig /tmp/tmp.data >/dev/null 2>/dev/null
 }
 
@@ -68,7 +68,7 @@ encrypt(){
     if [ -z "$hide" ];then flag="-r";else flag="-R";fi
     gpg_cmd="gpg --batch --armor -e"
     for recipient in $(echo "$recipients");do gpg_cmd+=" $flag $recipient"; done
-    echo "$content"|eval "$gpg_cmd"
+    echo -n "$content"|eval "$gpg_cmd"
 }
 
 ## JSON helpers, some explicitly act on the MESSAGE variable

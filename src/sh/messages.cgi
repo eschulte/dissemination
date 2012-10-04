@@ -57,7 +57,7 @@ echo "some message"|dis-pack|dis-send -s $(hostname)
 CONTENT="some message"
 LENGTH=\$(expr length "\$CONTENT")
 HASH=\$(echo "\"content\" \$length \$content"|sha1sum|cut -c-40)
-echo "{\\"keys\\":[\\"content\\"], \\"hash\\":\\"\$HASH\\", \\"content\\":\\"\$CONTENT\\"}" \\
+echo "{\\"hash\\":\\"\$HASH\\", \\"content\\":\\"\$CONTENT\\"}" \\
   |gzip \\
   |netcat -c $(hostname) 4444
 <pre>

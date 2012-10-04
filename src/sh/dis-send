@@ -22,4 +22,4 @@ while [ $# -gt 0 ];do
 done
 CONTENT=$(if [ -z "$1" ];then cat -;else cat "$1";fi)
 
-echo "$CONTENT"|gzip|netcat -c "$HOST" "$PORT"
+echo -E "push $CONTENT"|netcat -c "$HOST" "$PORT"

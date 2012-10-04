@@ -13,7 +13,7 @@
 . $(dirname $0)/dis-common
 
 ## Parse command line arguments
-SIGN=""; SIGNATORY=""; RECIPIENTS=(); HIDE="";
+nSIGN=""; SIGNATORY=""; RECIPIENTS=(); HIDE="";
 options  -o sS:r:h -l sign,signatory:,recipient:,hide -- "$@"
 while [ $# -gt 0 ];do
     case $1 in
@@ -42,7 +42,6 @@ JSON=$(
 
     # Hash
     HASH=$(sha1 $CONTENT)
-    echo -n " \"keys\":[\"content\"],"
     echo -n " \"hash\":\"$HASH\","
 
     # Sign
@@ -57,7 +56,7 @@ JSON=$(
 
     fi
     
-    echo -n " \"content\":$(echo "$CONTENT"|quote)"
+    echo -n " \"content\":$(echo -n "$CONTENT"|quote)"
     
     echo    " }")
 
