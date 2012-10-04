@@ -11,7 +11,6 @@ BLDIR=build
 all: aur
 .PHONY: package package-upload aur aur-upload clean doc install
 
-#$(GROFF) -rLL=$(WIDTH)n -rLT=$(WIDTH) $<|less
 doc: dissemination.mm
 	if [ $(WIDTH) -lt 72 ];then \
 		$(GROFF) $<|cut -c6-|less; \
@@ -31,7 +30,7 @@ dissemination.pdf: dissemination.ps
 install:
 	mkdir -p $(BINDIR) $(DOCDIR) $(LICDIR); \
 	install -D src/sh/* $(BINDIR); \
-	$(GROFF_TXT) >> $(BINDIR)messages.cgi; \
+	$(GROFF_TXT) dissemination.mm >> $(BINDIR)messages.cgi; \
 	$(GROFF) dissemination.mm > $(DOCDIR)dissemination.txt; \
 	install -Dm644 COPYING $(LICDIR)COPYING;
 

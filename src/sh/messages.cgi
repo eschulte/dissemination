@@ -58,7 +58,6 @@ CONTENT="some message"
 LENGTH=\$(expr length "\$CONTENT")
 HASH=\$(echo "\"content\" \$length \$content"|sha1sum|cut -c-40)
 echo "{\\"hash\\":\\"\$HASH\\", \\"content\\":\\"\$CONTENT\\"}" \\
-  |gzip \\
   |netcat -c $(hostname) 4444
 <pre>
 </body>

@@ -13,7 +13,7 @@
 . $(dirname $0)/dis-common
 
 ## Parse command line arguments
-nSIGN=""; SIGNATORY=""; RECIPIENTS=(); HIDE="";
+SIGN=""; SIGNATORY=""; RECIPIENTS=(); HIDE="";
 options  -o sS:r:h -l sign,signatory:,recipient:,hide -- "$@"
 while [ $# -gt 0 ];do
     case $1 in
