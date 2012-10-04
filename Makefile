@@ -63,7 +63,8 @@ src/js/README.md: dissemination.txt
 	cp $< $@
 
 npm: src/js/README.md
-	$(MAKE) -C src/js/ pack
+	$(MAKE) -C src/js/ pack; \
+	cp src/js/dissemination-0.0.1.tgz ./
 
 clean:
 	$(MAKE) -C src/c/ clean; \
