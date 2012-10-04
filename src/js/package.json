@@ -12,8 +12,8 @@
   ]
 , "engines" : { "node" : "~0.8.0" }
 , "devDependencies": { "coffee-script": "~1.3.3" }
+, "dependencies": { "gpgme" : "~0.0.1" }
 , "os" : [ "!win32" ]
-, "private" : true
 , "scripts" : { "install" : "make" }
 , "config":
   { "base":"/srv/dis/base"
@@ -21,4 +21,5 @@
   , "port": 4444
   , "config": "./config.js"
   }
+, "private" : true
 }

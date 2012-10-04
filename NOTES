@@ -114,7 +114,7 @@ required sections
 - Security Considerations
 - IANA Considerations
 
-* Server Notes and Tasks [1/4]
+* Server Notes and Tasks [2/4]
 ** TODO implement inter-server synchronization
 - runs off of a timer
 - uses pull and push (or zpull and zpush) to communicate messages
@@ -136,11 +136,20 @@ maybe have a encrypted version of each action, e.g.,
 - zpull :: compresses its results
 - zgrep :: compresses its results
 
-** TODO encryption in node
+** DONE encryption in node (node-gpg)
+Wrote C++ bindings to libgpgme see https://github.com/eschulte/node-gpg.
+
 If I need to write C bindings, take a look at https://github.com/chrisa/node-rsa
 
 Will need to wrap GPG.  First get file:src/c/sig.c working, then
 write a node API.
+
+See
+- http://nodejs.org/docs/latest/api/addons.html <- (how did I not find this earlier!)
+- http://nikhilm.bitbucket.org/articles/c_in_my_javascript/c_in_javascript_part_1.html
+- http://nikhilm.bitbucket.org/articles/c_in_my_javascript/c_in_javascript_part_2.html
+- http://syskall.com/how-to-write-your-own-native-nodejs-extension
+- https://github.com/JustinTulloss/zeromq.node/blob/master/binding.cc
 
 * Library
 What would application writers want in an API?
