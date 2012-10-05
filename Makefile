@@ -11,12 +11,16 @@ BLDIR=build
 all: aur
 .PHONY: package package-upload aur aur-upload clean doc install
 
-doc: dissemination.mm
+doc: dissemination.utf8
 	if [ $(WIDTH) -lt 72 ];then \
-		$(GROFF) $<|cut -c6-|less; \
+		cat $<|cut -c6-|less; \
 	else \
-		$(GROFF) $<|less; \
+		cat $<|less; \
 	fi
+
+dissemination.utf8: dissemination.mm
+	$(GROFF) $<|tail -n -66  > $@; \
+	$(GROFF) $<|head -n -66 >> $@;
 
 dissemination.txt: dissemination.mm
 	$(GROFF_TXT) $< > $@

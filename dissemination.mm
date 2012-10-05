@@ -289,4 +289,28 @@ I'm sure there are some, but who knows what.  Any with JSON parsing or
 GPG signature verification or decryption could be issues here.  Many
 Usenet security issues could also be relevant here.
 
+.H 1 "Tools"
+
+Here is a provisional list of those tools which should exist in some
+form to form a proof of concept that this idea has legs.  So far the
+first and the last exist.
+
+.BL
+.LI
+A message server.  Currently a node server does exist and GPG bindings
+for node allowing message signature verification have been written.
+.LI
+A web interface to a message server.  This would require a way of
+calling GPG from within the browser to verify signatures, to decrypt
+messages, and to encrypt and sign outgoing messages.
+.LI
+Another web front end allowing for the assembly of messages with html
+content into web pages.  This would provide for easily updated web
+pages with strict access controls based on the subset of the available
+messages which the reading has permission to decrypt.
+.LI
+Command line tools for browsing local and remote message repositories,
+and for encoding and decoding messages.
+.LE
+
 .TC
