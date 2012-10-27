@@ -61,7 +61,7 @@ push = (socket, msgs) ->
     added.push msg
     all[msg.hash] = msg
   (hook added, socket for hook in post_save_hook) if added.length > 0
-  socket.end  "added #{added.length} messages"
+  socket.end  JSON.stringify(msg.hash for msg in added)
 
 # read a (list of) hash prefix(es) and return the identified messages
 pull = (socket, hashes) ->

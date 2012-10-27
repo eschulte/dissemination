@@ -58,7 +58,6 @@ else
             for i in $(seq $(echo "$RESULT"|jshon -l));do
                 show_msg "$(echo "$RESULT"|jshon -e $i)"
             done|less;;
-        push) echo "$RESULT";;
-        grep) echo "$RESULT"|jshon -a -u;;
+        push|grep) echo "$RESULT"|jshon -a -u;;
     esac
 fi
