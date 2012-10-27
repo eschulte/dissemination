@@ -9,12 +9,15 @@
 #   push    takes a message hash and uploads it to the server
 #
 # OPTIONS
-#   -s, --server [HOST]      the host to send to (default:localhost)
-#   -p, --port [PORT]        the port on the host (default:4444)
+#   -s, --server [HOST]      the host to send to
+#                            default is DIS_HOST or localhost
+#   -p, --port [PORT]        the port on the host
+#                            default is DIS_PORT or 4444
 #   -j, --json               leave the results as raw JSON
 #
 . $(dirname $0)/dis-common
-HOST=localhost; PORT=4444;
+if [ -z $DIS_HOST ];then HOST=localhost;else HOST=$DIS_HOST;fi
+if [ -z $DIS_PORT ];then PORT=4444;    else  PORT=$DIS_PORT;fi
 options -o s:p:j -l server:,port:,json -- "$@"
 while [ $# -gt 0 ];do
     case $1 in
