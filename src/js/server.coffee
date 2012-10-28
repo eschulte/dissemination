@@ -65,8 +65,9 @@ push = (socket, msgs) ->
 
 # read a (list of) hash prefix(es) and return the identified messages
 pull = (socket, hashes) ->
-  match_pull = (key) -> (wrap hashes).some (pre) -> startsWith key, pre
-  socket.end (JSON.stringify (v for k,v of all when match_pull k))+'\n'
+  expand = (pre) -> (v for k,v of all when startsWith k, pre)
+  out = ((expand h) for h in (wrap hashes)).reduce (a,b) -> a.concat b
+  socket.end (JSON.stringify out)+'\n'
 
 # read a JSON query and return the hashes of the matching messages
 grep = (socket, query) ->
