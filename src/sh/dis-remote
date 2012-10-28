@@ -18,7 +18,6 @@
 #
 # TODO:
 # - don't re-sort the messages between grep and pull
-# - handle empty grep/pull results with grace (don't just dump to jshon)
 # 
 . $(dirname $0)/dis-common
 if [ -z $DIS_HOST ];then HOST=localhost;else HOST=$DIS_HOST;fi
@@ -62,6 +61,10 @@ else
             for i in $(seq $(echo "$RESULT"|jshon -l));do
                 show_msg "$(echo "$RESULT"|jshon -e $i)"
             done|less;;
-        push|grep) echo "$RESULT"|jshon -a -u;;
+        push|grep)
+            COUNT=$(echo "$RESULT"|jshon -l)
+            if [ ! "$COUNT" == "0" ];then
+                echo "$RESULT"|jshon -a -u
+            fi;;
     esac
 fi
