@@ -15,7 +15,11 @@
 #                            default is DIS_PORT or 4444
 #   -j, --json               leave the results as raw JSON
 #   -n, --dry-run            print to STDOUT instead of the server
-#   
+#
+# TODO:
+# - don't re-sort the messages between grep and pull
+# - handle empty grep/pull results with grace (don't just dump to jshon)
+# 
 . $(dirname $0)/dis-common
 if [ -z $DIS_HOST ];then HOST=localhost;else HOST=$DIS_HOST;fi
 if [ -z $DIS_PORT ];then PORT=4444;    else  PORT=$DIS_PORT;fi
