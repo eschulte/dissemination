@@ -58,7 +58,7 @@ if [ ! -z "$JSON" ];then
 else
     case $cmd in
         pull)
-            for i in $(seq $(echo "$RESULT"|jshon -l));do
+            for i in $(seq $(echo "$RESULT"|jshon -l)|tac);do
                 show_msg "$(echo "$RESULT"|jshon -e $i)"
             done|less;;
         push|grep)
