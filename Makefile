@@ -76,4 +76,4 @@ clean:
 	rm -rf pkg/ src/dissemination/ *.txt *.ps *.pdf
 
 real-clean: clean
-	rm -rf *.tar.gz *.tar.xz $(BLDIR)
+	rm -rf *.tar.gz *.tar.xz *.tgz $(BLDIR)
