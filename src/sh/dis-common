@@ -24,7 +24,7 @@ help(){
         |cut -c3-)
     error "$HELP_TEXT"
 }
-if $(contains "$1" "^\-\?\-h");then help; fi
+if $(contains "$1" "^\-\?\-h\(elp\|$\)");then help; fi
 
 options(){
     eval set -- $(getopt $@|| help && exit 1;)
@@ -42,10 +42,12 @@ gpg_name(){
     # TODO: setup a mapping between custom user names and gpg IDs
     local signatory="$1";
     if [ -z "$signatory" ];then
-        if [ -z "$GPGKEY" ];then
-            echo "no default GPG key set in GPGKEY";
+        if [ ! -z "$DIS_SIGNATORY" ];then
+            signatory="$DIS_SIGNATORY"
+        elif [ ! -z "$GPGKEY" ];then
+            signatory="$GPGKEY"
         else
-            signatory="$GPGKEY";
+            echo "no default GPG key set in GPGKEY"; >&2
         fi
     fi
     echo "$signatory"

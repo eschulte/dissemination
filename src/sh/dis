@@ -8,7 +8,7 @@
 #  push ---- push messages to a remote server
 #
 # Options:
-#  -h, --host [HOST]        host name of the remote host
+#  -H, --host [HOST]        host name of the remote host
 #                           default is DIS_HOST or localhost
 #  -p, --port [PORT]        port on the remote host
 #                           default is DIS_PORT or 4444
@@ -17,23 +17,32 @@
 #
 # PUSH Options:
 #  -s, --sign               sign message
+#  -S, --signatory [USER]   use USER as signatory, implies -s
+#                           defaults to DIS_SIGNATORY or GPGKEY
 #  -e, --encrypt [USER]     encrypt for recipient USER, this options
 #                           multiple okay for multiple recipients
-#  -H, --hide               hide recipient list from public view
+#  -I, --hide               hide recipient list from public view
 #
 . $(dirname $0)/dis-common
 if [ -z $DIS_HOST ];then HOST=localhost;else HOST=$DIS_HOST;fi
 if [ -z $DIS_PORT ];then PORT=4444;    else  PORT=$DIS_PORT;fi
-options -o h:p:jnse:H -l host:,port:,json,dry-run,sign,encrypt,hide -- "$@"
+SIGN=""; SIGNATORY=""; RECIPIENTS=(); HIDE="";
+options -o H:p:jnsS:e:I -l host:,port:,json,dry-run,sign,signatory,encrypt,hide -- "$@"
 while [ $# -gt 0 ];do
     case $1 in
-        -h|--host)    HOST="$2"; shift;;
+        -H|--host)    HOST="$2"; shift;;
         -p|--port)    PORT="$2"; shift;;
         -j|--json)    JSON="yes";;
         -n|--dry-run) DRY="yes";;
         -s|--sign)    SIGN="yes";;
+        -S|--signatory)  if [ -z "$SIGNATORY" ];then
+                        SIGN="yes";
+                        SIGNATORY="$2"; shift;
+                      else
+                        error "can only specify 1 signatory";
+                      fi;;
         -e|--encrypt) RECIPIENTS+="$2"; shift;;
-        -H|--hide) HIDE="yes";;
+        -I|--hide) HIDE="yes";;
         (--) shift; break;;
         (-*) error "$0: error -- unrecognized option $1";;
         (*)  break;;
@@ -52,6 +61,8 @@ run(){
               else
                 PACK_ARGS=""
                 if [ ! -z "$SIGN" ];then PACK_ARGS+=" -s"; fi
+                if [ ! -z "$HIDE" ];then PACK_ARGS+=" -h"; fi
+                if [ ! -z "$SIGNATORY" ];then PACK_ARGS+=" -S '$SIGNATORY'"; fi
                 # TODO: handle multiple recipients
                 if [ ! -z "$RECIPIENT" ];then PACK_ARGS+=" -r ${RECIPIENTS[0]}"; fi
                 echo -E "push [$(echo "$args"|dis-pack $PACK_ARGS)]"
@@ -75,8 +86,10 @@ else
                     show_msg "$(echo "$RESULT"|jshon -e $(expr $i - 1))"
                 done;;
             push|grep)
-                COUNT=$(echo "$RESULT"|jshon -l)
-                if [ ! "$COUNT" == "0" ];then
+                COUNT=$(echo "$RESULT"|jshon -l 2>/dev/null)
+                if [ -z "$COUNT" ];then
+                    echo "ERROR: $RESULT"
+                elif [ ! "$COUNT" == "0" ];then
                     echo "$RESULT"|jshon -a -u
                 fi;;
         esac
