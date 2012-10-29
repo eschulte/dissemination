@@ -41,16 +41,17 @@ send = (remote, msgs) ->
 
 ## Server
 server = (socket) ->
+  str = "";
   socket.on 'data', (data) ->
-    str      = data.toString('utf8')
-    try
-      msg_data = JSON.parse (str.substr 5)
-      switch (str.substr 0, 4).toLowerCase()
-        when 'push' then push socket, msg_data
-        when 'pull' then pull socket, msg_data
-        when 'grep' then grep socket, msg_data
-        else bail socket
-    catch e then socket.end "server error: #{e}"
+    if (str += data.toString('utf8')).indexOf("\n") >= 0
+      try
+        msg_data = JSON.parse (str.substr 5)
+        switch (str.substr 0, 4).toLowerCase()
+          when 'push' then push socket, msg_data
+          when 'pull' then pull socket, msg_data
+          when 'grep' then grep socket, msg_data
+          else bail socket
+      catch e then socket.end "error: #{e}\nparsing: #{str.substr 5}"
   socket.on 'error', (err) -> console.error "server socket error: #{err}"
 
 # read a (list of) message(s) and add them to the local message store
