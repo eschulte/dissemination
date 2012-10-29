@@ -38,7 +38,7 @@ install:
 	$(GROFF) dissemination.mm > $(DOCDIR)dissemination.txt; \
 	install -Dm644 COPYING $(LICDIR)COPYING;
 
-package dissemination.tar.gz: clean
+package dissemination.tar.gz: real-clean
 	tar --exclude=".git" --exclude=".gitignore" --exclude="src/c" \
 	--exclude="src/js" --exclude="src/dissemination.tar.gz" --exclude="stuff"\
 	--exclude="*.tar.gz" --transform='s:./:dissemination/:' \
