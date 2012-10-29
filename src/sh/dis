@@ -1,0 +1,84 @@
+#!/bin/bash
+#
+# usage: dis [options] cmd [args]
+#
+# Commands:
+#  grep ---- search remote server for key regexp pairs
+#  pull ---- pull messages from remote server matching hashes
+#  push ---- push messages to a remote server
+#
+# Options:
+#  -h, --host [HOST]        host name of the remote host
+#                           default is DIS_HOST or localhost
+#  -p, --port [PORT]        port on the remote host
+#                           default is DIS_PORT or 4444
+#  -j, --json               leave the results as raw JSON
+#  -n, --dry-run            print to STDOUT instead of the server
+#
+# PUSH Options:
+#  -s, --sign               sign message
+#  -e, --encrypt [USER]     encrypt for recipient USER, this options
+#                           multiple okay for multiple recipients
+#  -H, --hide               hide recipient list from public view
+#
+. $(dirname $0)/dis-common
+if [ -z $DIS_HOST ];then HOST=localhost;else HOST=$DIS_HOST;fi
+if [ -z $DIS_PORT ];then PORT=4444;    else  PORT=$DIS_PORT;fi
+options -o h:p:jnse:H -l host:,port:,json,dry-run,sign,encrypt,hide -- "$@"
+while [ $# -gt 0 ];do
+    case $1 in
+        -h|--host)    HOST="$2"; shift;;
+        -p|--port)    PORT="$2"; shift;;
+        -j|--json)    JSON="yes";;
+        -n|--dry-run) DRY="yes";;
+        -s|--sign)    SIGN="yes";;
+        -e|--encrypt) RECIPIENTS+="$2"; shift;;
+        -H|--hide) HIDE="yes";;
+        (--) shift; break;;
+        (-*) error "$0: error -- unrecognized option $1";;
+        (*)  break;;
+    esac
+    shift
+done
+
+cmd=$1; shift
+if [ "$1" == "-" ];then args="$(cat -)";else args="$@";fi
+
+run(){
+    case "$cmd" in
+        pull) echo -E "pull $(to_array  $args)";;
+        push) if [ "$(echo -n "$args"|head -1|jshon -t 2>/dev/null)" == "object" ];then
+                echo -E "push [$(echo -n "$args"|tr '\n' ',')]"
+              else
+                PACK_ARGS=""
+                if [ ! -z "$SIGN" ];then PACK_ARGS+=" -s"; fi
+                # TODO: handle multiple recipients
+                if [ ! -z "$RECIPIENT" ];then PACK_ARGS+=" -r ${RECIPIENTS[0]}"; fi
+                echo -E "push [$(echo "$args"|dis-pack $PACK_ARGS)]"
+              fi;;
+        grep) echo -E "grep $(to_object $args)";;
+        *)    echo "$0: '$cmd' is not a dis comment. See 'dis --help'." >&2
+              exit 1;;
+    esac
+}
+
+if [ ! -z "$DRY" ];then
+    run
+else
+    RESULT="$(run|netcat "$HOST" "$PORT")"
+    if [ ! -z "$JSON" ];then
+        echo "$RESULT"
+    else
+        case $cmd in
+            pull)
+                for i in $(seq $(echo "$RESULT"|jshon -l)|tac);do
+                    show_msg "$(echo "$RESULT"|jshon -e $i)"
+                done;;
+            push|grep)
+                COUNT=$(echo "$RESULT"|jshon -l)
+                if [ ! "$COUNT" == "0" ];then
+                    echo "$RESULT"|jshon -a -u
+                fi;;
+        esac
+    fi
+fi
