@@ -71,8 +71,8 @@ else
     else
         case $cmd in
             pull)
-                for i in $(seq $(echo "$RESULT"|jshon -l)|tac);do
-                    show_msg "$(echo "$RESULT"|jshon -e $i)"
+                for i in $(seq $(echo "$RESULT"|jshon -l));do
+                    show_msg "$(echo "$RESULT"|jshon -e $(expr $i - 1))"
                 done;;
             push|grep)
                 COUNT=$(echo "$RESULT"|jshon -l)
