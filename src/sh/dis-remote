@@ -60,7 +60,7 @@ else
         pull)
             for i in $(seq $(echo "$RESULT"|jshon -l)|tac);do
                 show_msg "$(echo "$RESULT"|jshon -e $i)"
-            done|less;;
+            done;;
         push|grep)
             COUNT=$(echo "$RESULT"|jshon -l)
             if [ ! "$COUNT" == "0" ];then
