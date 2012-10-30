@@ -1,7 +1,7 @@
 # Notes                                                      -*- org -*-
 #+Options: ^:nil
 
-* Notes and Tasks [0/3]
+* Notes and Tasks [0/6]
 ** Relevant Links
 *** Twitter-like services
 - http://www.twhirl.org/
@@ -113,6 +113,69 @@ should start with (1) introduction
 required sections
 - Security Considerations
 - IANA Considerations
+
+** TODO catch these sorts of errors when starting the node server
+and give this advice
+: setcap 'cap_net_bind_service=+p' $(which node)
+
+for this error
+: $ npm start -g dissemination
+: 
+: > dissemination@0.0.1 start /usr/lib/node_modules/dissemination
+: > node server.js
+: 
+: server running on port 75
+: 
+: events.js:68
+:         throw arguments[1]; // Unhandled 'error' event
+:                        ^
+: Error: listen EACCES
+:     at errnoException (net.js:769:11)
+:     at Server._listen2 (net.js:892:19)
+:     at listen (net.js:936:10)
+:     at Server.listen (net.js:985:5)
+:     at Object.<anonymous> (/usr/lib/node_modules/dissemination/server.js:267:28)
+:     at Object.<anonymous> (/usr/lib/node_modules/dissemination/server.js:271:4)
+:     at Module._compile (module.js:449:26)
+:     at Object.Module._extensions..js (module.js:467:10)
+:     at Module.load (module.js:356:32)
+:     at Function.Module._load (module.js:312:12)
+: npm ERR! dissemination@0.0.1 start: `node server.js`
+: npm ERR! `sh "-c" "node server.js"` failed with 1
+: npm ERR!
+: npm ERR! Failed at the dissemination@0.0.1 start script.
+: npm ERR! This is most likely a problem with the dissemination package,
+: npm ERR! not with npm itself.
+: npm ERR! Tell the author that this fails on your system:
+: npm ERR!     node server.js
+: npm ERR! You can get their info via:
+: npm ERR!     npm owner ls dissemination
+: npm ERR! There is likely additional logging output above.
+: 
+: npm ERR! System Linux 3.4.9-1-ARCH
+: npm ERR! command "/usr/bin/node" "/usr/bin/npm" "start" "-g" "dissemination"
+: npm ERR! cwd /srv/dis
+: npm ERR! node -v v0.8.12
+: npm ERR! npm -v 1.1.63
+: npm ERR! code ELIFECYCLE
+: npm ERR! Error: EACCES, open 'npm-debug.log'
+: npm ERR!  { [Error: EACCES, open 'npm-debug.log'] errno: 3, code: 'EACCES', path: 'npm-debug.log' }
+: npm ERR!
+: npm ERR! Please try running this command again as root/Administrator.
+: 
+: npm ERR! System Linux 3.4.9-1-ARCH
+: npm ERR! command "/usr/bin/node" "/usr/bin/npm" "start" "-g" "dissemination"
+: npm ERR! cwd /srv/dis
+: npm ERR! node -v v0.8.12
+: npm ERR! npm -v 1.1.63
+: npm ERR! path npm-debug.log
+: npm ERR! code EACCES
+: npm ERR! errno 3
+: npm ERR! stack Error: EACCES, open 'npm-debug.log'
+: npm ERR!
+: npm ERR! Additional logging details can be found in:
+: npm ERR!     /srv/dis/npm-debug.log
+: npm ERR! not ok code 0
 
 * Server Notes and Tasks [2/4]
 ** TODO implement inter-server synchronization
