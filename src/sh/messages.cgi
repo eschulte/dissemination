@@ -31,7 +31,8 @@ messages_to_html(){
         KEYS="$(keys)"
         HASH="$(get hash)"
         echo "<dt><span title='$HASH'>$(echo "$HASH"|cut -c1-8)</span>"
-        echo "<a href='messages.cgi?hash=$HASH'>download</a></dt><dd>"
+        echo "<a href='?hash=$HASH&view=text'>view</a>"
+        echo "<a href='?hash=$HASH'>download</a></dt><dd>"
         if $(contains "$KEYS" signatory);then
             echo "Signed By: <span title='$(get signature)'>"
             echo "$(get signatory)</span>"
@@ -73,7 +74,21 @@ Content-type: text/html
 </body>
 </html>
 EOF
-elif [ -z "${params[hash]}" ];then
+elif [ ! -z "${params[hash]}" ];then
+    if [ "${params[view]}" == "text" ];then
+        cat <<EOF
+Content-type: text/plain
+
+$(show_msg "$(echo "${params[hash]}"|dis-read -|head -1)")
+EOF
+    else
+        cat <<EOF
+Content-type: text/json
+
+$(echo "${params[hash]}"|dis-read -|head -1)
+EOF
+    fi
+else
 cat <<EOF
 Content-type: text/html
 
@@ -94,15 +109,13 @@ Content-type: text/html
 
 <h1>Messages</h1>
 
+<pre>
+${params[it]}
+</pre>
+
 <dl>$(messages_to_html)</dl>
 </body>
 </html>
-EOF
-else
-cat <<EOF
-Content-type: text/json
-
-$(echo "${params[hash]}"|dis-read -|head -1)
 EOF
 fi
 
