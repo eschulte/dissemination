@@ -29,7 +29,7 @@ startsWith = (str,pre) -> str.substr(0,pre.length) == pre
 
 save = () ->
   console.log "saving"
-  fs.writeFile base, ((JSON.stringify v for k,v of all).join '\n'), 'utf8'
+  fs.writeFile base, ((JSON.stringify v for k,v of all).join '\n') + '\n', 'utf8'
 
 send = (remote, msgs) ->
   socket = net.createConnection remote, () ->
