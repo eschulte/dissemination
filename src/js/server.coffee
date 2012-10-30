@@ -57,10 +57,10 @@ server = (socket) ->
 # read a (list of) message(s) and add them to the local message store
 push = (socket, msgs) ->
   added = []; msgs = (wrap msgs)
-  (msgs = hook msgs for hook in pre_save_hook)
+  try (msgs = hook msgs for hook in pre_save_hook) catch e
+    socket.end "pre_save_hook error: #{e}"; msgs=[]
   for msg in (wrap msgs) when msg.hash and not (msg.hash of all)
-    added.push msg
-    all[msg.hash] = msg
+    added.push msg; all[msg.hash] = msg
   (hook added, socket for hook in post_save_hook) if added.length > 0
   socket.end  JSON.stringify(msg.hash for msg in added)+'\n'
 
