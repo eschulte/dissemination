@@ -118,7 +118,7 @@ show_msg(){
         echo "$key: $(get "$key")"
     done
     echo ""
-    get content|sed 's/^/    /'
+    get content
     echo ""
 }
 
