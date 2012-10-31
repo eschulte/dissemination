@@ -1,5 +1,6 @@
 *.js
 npm-debug.log
 node_modules
-README.md
 dissemination-*.tgz
+build
+package.json

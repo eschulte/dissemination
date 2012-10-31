@@ -1,25 +1,47 @@
+VERSION=$(shell git show -s --format="%ci" HEAD | cut -d ' ' -f 1 | tr -d '-')
+BUILD_DIR=build
+
 SOURCES=$(wildcard *.coffee)
 OBJECTS=$(SOURCES:.coffee=.js)
 
-.PHONY: run npm-pack
+BIN = \
+	dis-common \
+	dis-pack \
+	dis-read \
+	dis-save \
+	dis \
+	messages.cgi
 
-all: $(OBJECTS) config.js
+SCRIPTS=$(addprefix ../sh/, $(BIN))
+
+all: dist
+.PHONY: dist clean start
 
 %.js: %.coffee
 	coffee -c $<
+
+start: server.js README.md
+	npm start
 
 config.js:
 	echo "// Holds optional cofiguration" > $@
 	echo "post_save_hook.push(save)"     >> $@
 
-README.md:
-	$(MAKE) -C ../../ src/js/README.md
+package.json: package_template.json
+	cp $< $@; sed -i 's/VERSION/$(VERSION)/' $@;
 
-start: server.js README.md
-	npm start
+build: README.md package.json $(OBJECTS) $(SCRIPTS)
+	rm -rf $(BUILD_DIR);
+	mkdir -p $(BUILD_DIR)/bin;
+	cp package.json $(BUILD_DIR);
+	cp README.md $(BUILD_DIR);
+	cp $(SOURCES) $(BUILD_DIR);
+	cp $(OBJECTS) $(BUILD_DIR);
+	cp $(SCRIPTS) $(BUILD_DIR)/bin;
+	chmod -x $(BUILD_DIR)/bin/dis-common;
 
-pack: server.coffee package.json README.md Makefile .npmignore
+dist: build
 	npm pack
 
 clean:
-	rm -f $(OBJECTS) dissemination-*.tgz README.md
+	rm -rf $(BUILD_DIR) $(OBJECTS) dissemination-*.tgz package.json

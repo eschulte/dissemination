@@ -52,7 +52,7 @@ Content-type: text/html
 <body>
 <pre>
 # With these tools installed you can do,
-echo "some message"|dis-pack|dis-send -s $(hostname)
+echo "some message"|dis -H $(hostname)
 
 # Or without these tools the following will work for very simple messages.
 CONTENT="some message"
