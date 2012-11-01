@@ -45,21 +45,25 @@ messages_to_html(){
 }
 
 if [ ! -z "${params[submit]}" ];then
+HOST=$(if [ -z "$DIS_HOST" ];then hostname;else echo $DIS_HOST;fi)
+PORT=$(if [ -z "$DIS_PORT" ];then echo 4444;else echo $DIS_PORT;fi)
 cat <<EOF
 Content-type: text/html
 
 <html>
 <body>
 <pre>
-# With these tools installed you can do,
-echo "some message"|dis -H $(hostname)
+# With the dissemination tools installed you can,
+export DIS_HOST=$HOST
+export DIS_PORT=$PORT
+echo "some message"|dis push
 
 # Or without these tools the following will work for very simple messages.
 CONTENT="some message"
 LENGTH=\$(expr length "\$CONTENT")
 HASH=\$(echo "\"content\" \$length \$content"|sha1sum|cut -c-40)
 echo "{\\"hash\\":\\"\$HASH\\", \\"content\\":\\"\$CONTENT\\"}" \\
-  |netcat -c $(hostname) 4444
+  |netcat -c $HOST $PORT
 <pre>
 </body>
 </html>
@@ -98,7 +102,7 @@ Content-type: text/html
 <ul style="float:right">
 <li><a href="?submit=yes">How to Submit a Message</a></li>
 <li><a href="?doc=yes">Documentation</a></li>
-<li><a href="http://cs.unm.edu/~eschulte/data/dissemination-0.1-1.src.tar.gz">AUR package</a></li>
+<li><a href="http://cs.unm.edu/~eschulte/data/dissemination-0.0.20121101.tgz">NPM package</a></li>
 </ul>
 <form method="GET" action="messages.cgi">
   <p>
