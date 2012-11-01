@@ -56,3 +56,6 @@ dist: build
 
 clean:
 	rm -rf $(BUILD_DIR) $(OBJECTS) package.json
+
+real-clean: clean
+	rm -f dissemination-0.0.*.tgz
