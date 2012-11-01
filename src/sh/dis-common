@@ -37,6 +37,12 @@ sha1(){
     echo -n "\"content\" $length $content"|sha1sum|cut -c-40
 }
 
+stdinpipe(){
+    stdin="$(ls -l /proc/self/fd/0)"
+    stdin="${stdin/*-> /}"
+    if [[ "$stdin" =~ ^/dev/pts/[0-9] ]];then return 1;else return 0;fi
+}
+
 ## GPG Helpers
 gpg_name(){
     # TODO: setup a mapping between custom user names and gpg IDs
