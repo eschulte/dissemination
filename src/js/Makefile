@@ -12,7 +12,13 @@ BIN = \
 	dis \
 	messages.cgi
 
+MAN = \
+	dissemination.1 \
+	server.1 \
+	dis.1
+
 SCRIPTS=$(addprefix ../sh/, $(BIN))
+MANPAGES=$(addprefix man/, $(MAN))
 
 all: dist
 .PHONY: dist clean start doc
@@ -30,16 +36,15 @@ config.js:
 package.json: package_template.json
 	cp $< $@; sed -i 's/VERSION/$(VERSION)/' $@;
 
-build: README.md dissemination.1 package.json $(OBJECTS) $(SCRIPTS)
+build: README.md package.json $(OBJECTS) $(SCRIPTS)
 	rm -rf $(BUILD_DIR);
 	mkdir -p $(BUILD_DIR)/bin;
 	mkdir -p $(BUILD_DIR)/man;
 	cp README.md $(BUILD_DIR);
-	cp dissemination.1 $(BUILD_DIR);
 	cp package.json $(BUILD_DIR);
-	cp man/* $(BUILD_DIR)/man;
 	cp $(SOURCES) $(BUILD_DIR);
 	cp $(OBJECTS) $(BUILD_DIR);
+	cp $(MANPAGES) $(BUILD_DIR)/man;
 	cp $(SCRIPTS) $(BUILD_DIR)/bin;
 	chmod -x $(BUILD_DIR)/bin/dis-common;
 
@@ -47,7 +52,7 @@ doc: dissemination.1
 	groff -t -mdoc -Tascii -P-cbu $<|less
 
 dist: build
-	npm pack
+	pushd $(BUILD_DIR); npm pack; popd; mv $(BUILD_DIR)/dissemination-*.tgz ./;
 
 clean:
-	rm -rf $(BUILD_DIR) $(OBJECTS) dissemination-*.tgz package.json
+	rm -rf $(BUILD_DIR) $(OBJECTS) package.json
