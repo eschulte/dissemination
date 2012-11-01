@@ -15,7 +15,7 @@ BIN = \
 SCRIPTS=$(addprefix ../sh/, $(BIN))
 
 all: dist
-.PHONY: dist clean start
+.PHONY: dist clean start doc
 
 %.js: %.coffee
 	coffee -c $<
@@ -30,15 +30,19 @@ config.js:
 package.json: package_template.json
 	cp $< $@; sed -i 's/VERSION/$(VERSION)/' $@;
 
-build: README.md package.json $(OBJECTS) $(SCRIPTS)
+build: README.md dissemination.1 package.json $(OBJECTS) $(SCRIPTS)
 	rm -rf $(BUILD_DIR);
 	mkdir -p $(BUILD_DIR)/bin;
-	cp package.json $(BUILD_DIR);
 	cp README.md $(BUILD_DIR);
+	cp dissemination.1 $(BUILD_DIR);
+	cp package.json $(BUILD_DIR);
 	cp $(SOURCES) $(BUILD_DIR);
 	cp $(OBJECTS) $(BUILD_DIR);
 	cp $(SCRIPTS) $(BUILD_DIR)/bin;
 	chmod -x $(BUILD_DIR)/bin/dis-common;
+
+doc: dissemination.1
+	groff -mdoc -Tascii -P-cbu $<|less
 
 dist: build
 	npm pack

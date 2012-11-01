@@ -13,6 +13,7 @@
   , "shell"
   , "command line"
   ]
+, "man": "dissemination.1"
 , "bin":
   { "dis" : "bin/dis"
   , "dis-pack" : "bin/dis-pack"
