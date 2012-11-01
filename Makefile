@@ -29,7 +29,7 @@ BIN = \
 SCRIPTS=$(addprefix sh/, $(BIN))
 
 all: dist
-.PHONY: aur dist dist-package clean install
+.PHONY: dist dist-package clean install
 
 js/%:
 	$(MAKE) -C js/ $(shell basename $@)
