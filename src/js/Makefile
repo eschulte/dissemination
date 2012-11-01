@@ -33,9 +33,11 @@ package.json: package_template.json
 build: README.md dissemination.1 package.json $(OBJECTS) $(SCRIPTS)
 	rm -rf $(BUILD_DIR);
 	mkdir -p $(BUILD_DIR)/bin;
+	mkdir -p $(BUILD_DIR)/man;
 	cp README.md $(BUILD_DIR);
 	cp dissemination.1 $(BUILD_DIR);
 	cp package.json $(BUILD_DIR);
+	cp man/* $(BUILD_DIR)/man;
 	cp $(SOURCES) $(BUILD_DIR);
 	cp $(OBJECTS) $(BUILD_DIR);
 	cp $(SCRIPTS) $(BUILD_DIR)/bin;

@@ -13,7 +13,11 @@
   , "shell"
   , "command line"
   ]
-, "man": "dissemination.1"
+, "man":
+  { "dissemination.1" : "man/dissemination.1"
+  , "dis-server.1" : "man/dis-server.1"
+  , "dis.1" : "man/dis.1"
+  }
 , "bin":
   { "dis" : "bin/dis"
   , "dis-pack" : "bin/dis-pack"
