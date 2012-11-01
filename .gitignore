@@ -8,8 +8,6 @@
 **.tar.xz
 **.tgz
 build/
-pkg/
-src/dissemination/
 
 # an ignored directory to hold misc stuff
 stuff

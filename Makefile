@@ -1,35 +1,12 @@
-GROFF=groff -t -mm -Tutf8
-GROFF_TXT=groff -t -mm -Tascii -P-cbu
-GROFF_PS=groff -t -mm
-WIDTH=$(shell stty size|awk '{print $$2}')
 HOST=moons.cs.unm.edu:public_html/data/
 BINDIR=$(DESTDIR)/usr/bin/
 DOCDIR=$(DESTDIR)/usr/share/doc/dissemination/
 LICDIR=$(DESTDIR)/usr/share/liscences/dissemination/
-BLDIR=build
+VERSION=$(shell git show -s --format="%ci" HEAD | cut -d ' ' -f 1 | tr -d '-')
+BUILD_DIR=build
 
-all: aur
-.PHONY: package package-upload aur aur-upload clean doc install
-
-doc: dissemination.utf8
-	if [ $(WIDTH) -lt 72 ];then \
-		cat $<|cut -c6-|less; \
-	else \
-		cat $<|less; \
-	fi
-
-dissemination.utf8: dissemination.mm
-	$(GROFF) $<|tail -n -66  > $@; \
-	$(GROFF) $<|head -n -66 >> $@;
-
-dissemination.txt: dissemination.mm
-	$(GROFF_TXT) $< > $@
-
-dissemination.ps: dissemination.mm
-	$(GROFF_PS) $< > $@
-
-dissemination.pdf: dissemination.ps
-	ps2pdf $<
+all: dist
+.PHONY: dist aur clean install
 
 install:
 	mkdir -p $(BINDIR) $(DOCDIR) $(LICDIR); \
@@ -38,39 +15,27 @@ install:
 	$(GROFF) dissemination.mm > $(DOCDIR)dissemination.txt; \
 	install -Dm644 COPYING $(LICDIR)COPYING;
 
-package dissemination.tar.gz: real-clean
-	tar --exclude=".git" --exclude=".gitignore" --exclude="src/c" \
-	--exclude="src/js" --exclude="src/dissemination.tar.gz" --exclude="stuff"\
-	--exclude="*.tar.gz" --transform='s:./:dissemination/:' \
-	-czf dissemination.tar.gz ./*
+dist-package: README.md package.json $(OBJECTS) $(SCRIPTS)
+	rm -rf $(BUILD_DIR);
+	mkdir -p $(BUILD_DIR)/bin;
+	mkdir -p $(BUILD_DIR)/man;
+	cp README.md $(BUILD_DIR);
+	cp package.json $(BUILD_DIR);
+	cp $(SOURCES) $(BUILD_DIR);
+	cp $(OBJECTS) $(BUILD_DIR);
+	cp $(MANPAGES) $(BUILD_DIR)/man;
+	cp $(SCRIPTS) $(BUILD_DIR)/bin;
+	chmod -x $(BUILD_DIR)/bin/dis-common;
 
-package-upload: dissemination.tar.gz
-	scp dissemination.tar.gz $(HOST)
-
-aur dissemination-0.1-1.src.tar.gz: dissemination.tar.gz
-	rm -rf $(BLDIR); \
-	mkdir -p $(BLDIR); \
-	cp PKGBUILD $(BLDIR); \
-	cp $< $(BLDIR); \
-	cd $(BLDIR); \
-	sed -i "s/md5sums=('placeholder')/$$(makepkg -g|grep md5sum)/" PKGBUILD; \
-	makepkg -f; \
-	mv dissemination-0.1-1-any.pkg.tar.xz ../; \
-	makepkg -f --source; \
-	mv dissemination-0.1-1.src.tar.gz ../; \
-	cd ../
-
-aur-upload: dissemination-0.1-1.src.tar.gz package-upload
-	scp $< $(HOST)
+dist: dist-package
+	pushd $(BUILD_DIR); npm pack; popd; mv $(BUILD_DIR)/dissemination-*.tgz ./;
 
 npm: src/js/README.md
 	$(MAKE) -C src/js/ dist; \
 	mv src/js/dissemination-0.0.*.tgz ./
 
 clean:
-	$(MAKE) -C src/c/ clean; \
-	$(MAKE) -C src/js/ clean; \
-	rm -rf pkg/ src/dissemination/ *.txt *.ps *.pdf
+	rm -r package.json
 
 real-clean: clean
-	rm -rf *.tar.gz *.tar.xz *.tgz $(BLDIR)
+	rm -rf *.tar.gz *.tar.xz *.tgz $(BUILD_DIR) $(BUILD_DIR)
