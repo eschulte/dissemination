@@ -21,7 +21,7 @@
   , "dis-read" : "bin/dis-read"
   , "dis-save" : "bin/dis-save"
   }
-, "man":"./man/dissemination.1"
+, "man":"./man/dissemination.7.gz"
 , "dependencies":
   { "gpgme" : "~0.0.1"
   , "jshon" : "*"

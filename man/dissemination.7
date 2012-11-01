@@ -1,6 +1,6 @@
 .\" man 7 groff_mdoc  Best resource ever
 .Dd October 31, 2012
-.Dt dissemination 1
+.Dt dissemination 7
 .Os
 .Sh NAME
 .Nm dissemination
@@ -48,7 +48,7 @@ distributed users table, such a table could associate each user with
 some of the following (although I like the idea of not doing anything
 with beyond what is provided by the existing GPG web of trust system).
 .Pp
-.Bl -dash -offset indent -compact
+.Bl -dash -compact
 .  It
 unique short human readable and writable name
 .  It
@@ -85,7 +85,7 @@ of the three possible message types; signed messages, signed and
 encrypted messages, and anonymous messages.
 .
 .Pp
-.Bl -dash -offset indent -compact
+.Bl -dash -compact
 .  It
 Signed messages must contain the following, but in addition may
 include any other arbitrary key-value pairs.
@@ -135,7 +135,8 @@ Key:Description
 _
 contents:The actual content of the message.
 date:Specifies when the message was posted.
-TTL:Or "time to live" specifies the maximum time the message may be preserved by a server.
+TTL:Or "time to live" specifies the maximum time
+   :\^the message may be preserved by a server.
 subject:A brief subject or title.
 .TE
 .Pp
@@ -183,7 +184,7 @@ respected if present.
 .Em Organization and discovery of Messages
 .Pp
 .Pp
-.Bl -enum -offset indent -compact
+.Bl -enum -compact
 .It
 by sender
 .It
@@ -292,7 +293,7 @@ Here is a provisional list of those tools which should exist in some
 form to form a proof of concept that this idea has legs.  So far the
 first and the last exist.
 .Pp
-.Bl -enum -offset indent -compact
+.Bl -enum -compact
 .It
 A message server.  Currently a node server does exist and GPG bindings
 for node allowing message signature verification have been written.
