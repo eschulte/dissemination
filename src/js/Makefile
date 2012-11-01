@@ -42,7 +42,7 @@ build: README.md dissemination.1 package.json $(OBJECTS) $(SCRIPTS)
 	chmod -x $(BUILD_DIR)/bin/dis-common;
 
 doc: dissemination.1
-	groff -mdoc -Tascii -P-cbu $<|less
+	groff -t -mdoc -Tascii -P-cbu $<|less
 
 dist: build
 	npm pack
