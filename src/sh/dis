@@ -52,6 +52,13 @@ while [ $# -gt 0 ];do
 done
 
 if stdinpipe;then args="$(cat -)";else args="$@";fi
+if [ -z "$args" ];then
+    if [ "$cmd" == "pull" ];then
+        error "Must specify which message hash(es) to pull.";
+    elif [ "$cmd" == "push" ];then
+        error "Must supply message(s) to push."
+    fi
+fi
 
 run(){
     case "$cmd" in
