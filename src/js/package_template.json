@@ -13,11 +13,7 @@
   , "shell"
   , "command line"
   ]
-, "man":
-  { "dissemination.1" : "man/dissemination.1"
-  , "dis-server.1" : "man/dis-server.1"
-  , "dis.1" : "man/dis.1"
-  }
+, "main":"server.js"
 , "bin":
   { "dis" : "bin/dis"
   , "dis-pack" : "bin/dis-pack"
@@ -25,7 +21,6 @@
   , "dis-read" : "bin/dis-read"
   , "dis-save" : "bin/dis-save"
   }
-, "main":"server.js"
 , "dependencies":
   { "gpgme" : "~0.0.1"
   , "jshon" : "*"
