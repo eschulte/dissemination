@@ -13,18 +13,19 @@ MANBLD=$(BUILD_DIR)/man/
 HOST:=moons.cs.unm.edu:public_html/data/
 
 MAN = \
-	dissemination.7 \
-	server.1 \
-	dis.1
+	dis.1 \
+	dis.7 \
+	pack.1 \
+	server.1
 MANPAGES=$(addprefix man/, $(MAN))
 MANBLDPAGES=$(addprefix $(MANBLD), $(MAN))
 
 BIN = \
+	dis \
 	dis-common \
 	dis-pack \
 	dis-read \
 	dis-save \
-	dis \
 	messages.cgi
 SCRIPTS=$(addprefix sh/, $(BIN))
 
@@ -37,12 +38,10 @@ js/%:
 install:
 	mkdir -p $(BINDIR) $(DOCDIR) $(LICDIR) $(MANDIR) $(MN7DIR);
 	install -D $(SCRIPTS) $(BINDIR);
-	install -Dm644 man/dis.1 $(MANDIR);
-	install -Dm644 man/dissemination.7 $(MN7DIR);
-	gzip $(MANDIR)dis.1 $(MN7DIR)dissemination.7;
+	install -Dm644 $(MANPAGES) $(MANDIR);
 	chmod a-x $(BINDIR)dis-common;
-	man -l -Tascii man/dissemination.7 >> $(BINDIR)messages.cgi;
-	man -l -Tascii man/dissemination.7 > $(DOCDIR)dissemination.txt;
+	man -l -Tascii man/dis.7 >> $(BINDIR)messages.cgi;
+	man -l -Tascii man/dis.7 > $(DOCDIR)dissemination.txt;
 	install -Dm644 COPYING $(LICDIR)COPYING;
 
 dist-package: js/README.md js/package.json js/server.js js/server.coffee
@@ -54,11 +53,11 @@ dist-package: js/README.md js/package.json js/server.js js/server.coffee
 	gzip $(MANBLDPAGES);
 	cp $(SCRIPTS) $(BINBLD);
 	chmod -x $(BINBLD)/dis-common;
-	man -l -Tascii man/dissemination.7 >> $(BINBLD)messages.cgi;
+	man -l -Tascii man/dis.7 >> $(BINBLD)messages.cgi;
 	cp COPYING $(BUILD_DIR);
 
 dist: dist-package
-	pushd $(BUILD_DIR); npm pack; popd; mv $(BUILD_DIR)/dissemination-*.tgz ./;
+	pushd $(BUILD_DIR); npm pack; popd; mv $(BUILD_DIR)/dis-*.tgz ./;
 
 clean:
 	$(MAKE) -C js/ clean

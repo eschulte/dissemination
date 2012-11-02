@@ -102,7 +102,7 @@ Content-type: text/html
 <ul style="float:right">
 <li><a href="?submit=yes">How to Submit a Message</a></li>
 <li><a href="?doc=yes">Documentation</a></li>
-<li><a href="http://cs.unm.edu/~eschulte/data/dissemination-0.0.20121102.tgz">NPM package</a></li>
+<li><a href="http://cs.unm.edu/~eschulte/data/dis-0.0.20121102.tgz">NPM package</a></li>
 <li><a href="http://cs.unm.edu/~eschulte/data/dissemination-git-20121102-1.src.tar.gz">AUR package</a></li>
 </ul>
 <form method="GET" action="messages.cgi">

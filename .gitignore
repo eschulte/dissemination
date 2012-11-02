@@ -7,8 +7,10 @@
 **.tar.gz
 **.tar.xz
 **.tgz
+
 build/
 pkg/
+package/
 
 # an ignored directory to hold misc stuff
 stuff

@@ -1,0 +1,38 @@
+.\" The following commands are required for all man pages.
+.TH DIS-PACK "1" "November 2012" "Dissemination" "User Commands"
+.SH NAME
+dis-pack - package a message into a JSON hash with optional signature
+and encryption
+.SH SYNOPSIS
+\fBdis-pack\fR [\fIOPTION\fR]... [\fIFILE\fR]
+.SH DESCRIPTION
+.PP
+Read a message from a file or STDIN and package it into a JSON hash
+for dissemination.  Possibly sign and encrypt the message using
+GPG. See dissemination(7) for more information on the distributed
+information dissemination system.
+.SH OPTIONS
+.PP
+.TP
+\fB\-s\fR, \fB\-\-sign\fR
+Sign the message with GPG.  The user is read from the
+\fBDIS_SIGNATORY\fR or \fBGPGKEY\fR environment variables.
+.TP
+\fB\-S\fR, \fB\-\-signatory\fR [\fBUSER\fR]
+Use the GPG key \fBUSER\fR to sign the message.
+.TP
+\fB\-e\fR, \fB\-\-encrypt\fR [\fBUSER\fR]
+Encrypt the message with GPG so that only recipient \fBUSER\fR will be
+able to decrypt its contents.  This option may be given multiple time
+to encrypt a message for decryption by multiple recipients.  Unless
+the \fB\-hide\fR option is given, a list of message recipients will be
+printed in the publicly visible portion of the message.
+.TP
+\fB\-I\fR, \fB\-\-hide\fR
+Do not place a recipient list in the unencrypted portion of the
+message.
+.PP
+.SH EXAMPLES
+.PP
+.SH AUTHORS
+Written by Eric Schulte.

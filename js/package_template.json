@@ -1,4 +1,4 @@
-{ "name":"dissemination"
+{ "name":"dis"
 , "description":"A System for distributed information dissemination"
 , "author":"Eric Schulte <eric.schulte@gmx.com>"
 , "version":"0.0.VERSION"
@@ -16,12 +16,18 @@
 , "main":"server.js"
 , "bin":
   { "dis" : "bin/dis"
-  , "dis-pack" : "bin/dis-pack"
   , "dis-common" : "bin/dis-common"
+  , "dis-pack" : "bin/dis-pack"
   , "dis-read" : "bin/dis-read"
   , "dis-save" : "bin/dis-save"
+  , "messages.cgi" : "bin/messages.cgi"
   }
-, "man":"./man/dissemination.7.gz"
+, "man" :
+  [ "man/dis.1.gz"
+  , "man/dis.7.gz"
+  , "man/pack.1.gz"
+  , "man/server.1.gz"
+  ]
 , "dependencies":
   { "gpgme" : "~0.0.1"
   , "jshon" : "*"
