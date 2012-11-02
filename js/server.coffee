@@ -50,7 +50,8 @@ server = (socket) ->
           when 'push' then push socket, msg_data
           when 'pull' then pull socket, msg_data
           when 'grep' then grep socket, msg_data
-          else bail socket
+          else
+            socket.end 'unsupported action\n'
       catch e then socket.end "error: #{e}\nparsing: #{str.substr 5}"
   socket.on 'error', (err) -> console.error "server socket error: #{err}"
 
@@ -75,9 +76,6 @@ grep = (socket, query) ->
   match_grep = (msg) ->
     Object.keys(query).every (key) -> (new RegExp(query[key])).exec msg[key]
   socket.end (JSON.stringify (k for k,v of all when match_grep v))+'\n'
-
-# bail on unknown action
-bail = (socket) -> socket.end 'unsupported action\n'
 
 
 ## Hook functions

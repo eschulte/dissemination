@@ -8,8 +8,8 @@ all: start
 %.js: %.coffee
 	coffee -c $<
 
-start: server.js
-	npm start
+base:
+	touch $@
 
 config.js:
 	echo "// Holds optional cofiguration" > $@
@@ -17,6 +17,9 @@ config.js:
 
 package.json: package_template.json
 	cp $< $@; sed -i 's/VERSION/$(VERSION)/' $@;
+
+start: server.js config.js package.json
+	npm start
 
 clean:
 	rm -f *.js package.json
