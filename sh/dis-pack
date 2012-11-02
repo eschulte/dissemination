@@ -8,7 +8,7 @@
 #  -s, --sign                  sign message
 #  -S, --signatory [USER-ID]   use USER-ID as signer, implies -s
 #  -r, --recipient [USER-ID]   encrypt for USER-ID (multiples okay)
-#  -H, --hide                  hide recipients from public view
+#  -i, --hide                  hide recipients from public view
 #
 . $(dirname $0)/dis-common
 
@@ -27,7 +27,7 @@ while [ $# -gt 0 ];do
             fi;;
         -e|--encrypt) RECIPIENTS+="$2"; shift;;
         -e|--encrypt) RECIPIENTS+="$2"; shift;;
-        -H|--hide) HIDE="yes";;
+        -i|--hide) HIDE="yes";;
         (--) shift; break;;
         (-*) error "$0: error -- unrecognized option $1";;
         (*)  break;;

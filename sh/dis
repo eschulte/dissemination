@@ -21,14 +21,14 @@
 #                           defaults to DIS_SIGNATORY or GPGKEY
 #  -e, --encrypt [USER]     encrypt for recipient USER, this options
 #                           multiple okay for multiple recipients
-#  -I, --hide               hide recipient list from public view
+#  -i, --hide               hide recipient list from public view
 #
 . $(dirname $0)/dis-common
 cmd=$1; shift
 if [ -z $DIS_HOST ];then HOST=localhost;else HOST=$DIS_HOST;fi
 if [ -z $DIS_PORT ];then PORT=4444;    else  PORT=$DIS_PORT;fi
 SIGN=""; SIGNATORY=""; RECIPIENTS=(); HIDE="";
-options -o H:p:jnsS:e:I -l host:,port:,json,dry-run,sign,signatory,encrypt,hide -- "$@"
+options -o H:p:jnsS:e:i -l host:,port:,json,dry-run,sign,signatory,encrypt,hide -- "$@"
 while [ $# -gt 0 ];do
     case $1 in
         -H|--host)    HOST="$2"; shift;;
@@ -43,7 +43,7 @@ while [ $# -gt 0 ];do
                         error "can only specify 1 signatory";
                       fi;;
         -e|--encrypt) RECIPIENTS+="$2"; shift;;
-        -I|--hide) HIDE="yes";;
+        -i|--hide) HIDE="yes";;
         (--) shift; break;;
         (-*) error "$0: error -- unrecognized option $1";;
         (*)  break;;
@@ -68,7 +68,7 @@ run(){
               else
                 PACK_ARGS=""
                 if [ ! -z "$SIGN" ];then PACK_ARGS+=" -s"; fi
-                if [ ! -z "$HIDE" ];then PACK_ARGS+=" -h"; fi
+                if [ ! -z "$HIDE" ];then PACK_ARGS+=" -i"; fi
                 if [ ! -z "$SIGNATORY" ];then PACK_ARGS+=" -S '$SIGNATORY'"; fi
                 # TODO: handle multiple recipients
                 if [ ! -z "$RECIPIENT" ];then PACK_ARGS+=" -r ${RECIPIENTS[0]}"; fi
