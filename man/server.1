@@ -1,36 +1,115 @@
-.\" The following commands are required for all man pages.
+.\" man 7 groff_mdoc  Best resource ever
 .Dd November 1, 2012
-.Dt dis-server 1
-.Os
+.Dt DIS-SERVER \&1 "Dissemination"
+.Os " "
 .Sh NAME
 .Nm dis-server
-.Nd node.js distributed message server
-.\" This next command is for sections 2 and 3 only.
-.\" .Sh LIBRARY
+.Nd JSON message server running on node.js 
 .Sh SYNOPSIS
-npm start dissemination
+\fBnpm\fR start dissemination
 .Sh DESCRIPTION
-.\" The following commands should be uncommented and
-.\" used where appropriate.
-.\" .Sh IMPLEMENTATION NOTES
-.\" This next command is for sections 2, 3 and 9 function
-.\" return values only.
-.\" .Sh RETURN VALUES
-.\" This next command is for sections 1, 6, 7 and 8 only.
-.\" .Sh ENVIRONMENT
-.\" .Sh FILES
-.Sh EXAMPLES
-.\" This next command is for sections 1, 6, 7, 8 and 9 only
-.\"     (command return values (to shell) and
-.\"     fprintf/stderr type diagnostics).
-.\" .Sh DIAGNOSTICS
-.\" .Sh COMPATIBILITY
-.\" This next command is for sections 2, 3 and 9 error
-.\"     and signal handling only.
-.\" .Sh ERRORS
-.\" .Sh SEE ALSO
-.\" .Sh STANDARDS
-.\" .Sh HISTORY
+.Nm
+distributes, persists and provides for discovery and download of
+messages.  See dis(7) for more information on the distributed
+information dissemination system.
+.Pp
+.Nm
+responds to three commands [grep,pull,push] defined below.  Each
+command must be accompanied by a single JSON argument and every
+response from
+.Nm
+will similarly be a single JSON element.
+.Pp
+The behavior of
+.Nm
+may be extensively customized through two hooks the
+\fBpre_save_hook\fR and the \fBpost_save_hook\fR that contain
+arbitrary JavaScript functions which are run by
+.Nm
+on received and on saved messages respectively.
+.Sh COMMANDS
+.Nm
+maintains a list of JSON messages which may have arbitrary fields and
+may or may not be signed or encrypted using GPG.  Each message must
+include a hash of its contents.
+.Nm
+provides access to this message database through three commands.  Each
+connection to
+.Nm
+must consist of a string of text starting with one of these commands,
+followed by a valid JSON object holding the arguments to the command
+as described below and terminated by a newline character.
+.Pp
+.Bl -tag -width ".." -compact
+.It Cm grep Ar object
+return the hash of all messages in the database whose values
+corresponding to each key in
+.Ar object
+match the corresponding value in
+.Ar object
+interpreted as a regular expression.
+.Pp
+.It Cm pull Ar array
+every element of
+.Ar array
+should be a string hash prefix.  Return a JSON array containing every
+message whose hash matches one of the prefixes in the
+.Ar array
+argument.
+.Pp
+.It Cm push Ar array
+accepts an array of messages each of which must be a JSON object
+including a \fBhash\fR key.  Returns a JSON array of the hashes of
+those messages saved to the database.
+.El
+.Pp
+.Sh HOOKS
+Each hook should be an array of JavaScript functions.  Hooks are
+specified in the configuration file which defaults to \fBconfig.js\fR.
+This file may contain arbitrary JavaScript.
+.Pp
+.Bl -tag -width ".." -compact
+.It Cm \fBpre_save_hook\fR
+The functions in this hook will be called in order every time a
+\fBpush\fR command is received.  The first function will take the
+message array supplied with the \fBpush\fR command.  Every subsequent
+function will take the output of the previous command is its input.
+The return value of the final function in this hook will be saved to
+the message database.  This hook may be used to verify, pre-process,
+and reject messages from persistence in the server.
+.Pp
+For example.  The \fBverify_signatures\fR function which is
+distributed as part of
+.Nm
+may be added to the \fBpre_save_hook\fR by adding the following line
+to the configuration file.
+.Pp
+\& pre_save_hook.push(verify_signatures);
+.Pp
+This will have the effect of only saving those messages whose
+signatures may be validated by the local GPG instance.
+.Pp
+.It \fBpost_save_hook\fR
+The functions in this hook will also be called in order every time a
+\fBpush\fR command is received.  Each function in this hook will take
+two arguments, first an array of all saved messages and second the
+socket from which the push command submitting the messages was
+received.  The return values of these messages are discarded.
+.Pp
+For example.  The \fBshare\fR function which is distributed as part of
+.Nm
+may be added to the \fBpost_save_hook\fR by adding the following lines
+to the configuration file.
+.Pp
+\& sync_servers.push({"host":"foo.com", "port":"4444"});
+.br
+\& post_save_hook.push(share);
+.Pp
+This will have the effect of pushing all saved messages along to the
+server running on \fBfoo.com\fR listening on port \fB4444\fR.
+.El
 .Sh AUTHORS
 Written by Eric Schulte.
-.\" .Sh BUGS
+.Pp
+.Sh BUGS
+Almost certainly.
