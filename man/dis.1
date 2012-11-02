@@ -1,65 +1,99 @@
 .\" The following commands are required for all man pages.
-.Dd November 1, 2012
-.Dt dis 1
-.Os 
-.Sh NAME
-.Nm dis
-.Nd command line client to distributed message servers
-.\" This next command is for sections 2 and 3 only.
-.\" .Sh LIBRARY
-.Sh SYNOPSIS
+.TH DIS "1" "November 2012" "Dissemination" "User Commands"
+.SH NAME
+dis - command line client to distributed message servers
+.SH SYNOPSIS
 \fBdis\fR \fICOMMAND\fR [\fIOPTION\fR]... [\fIFILE\fR]
-.Sh DESCRIPTION
-.Pp
+.SH DESCRIPTION
+.PP
 Interface to dissemination message servers.  Supports searching,
 downloading and unpacking messages as well as packaging and uploading
 messages. See
-.Xr dissemination 7
+dissemination(7)
 for more information on the distributed information dissemination
 system.
-.Pp
-One of the following three commands must be supplied.
-.Pp
-.TS
-tab(:);
-rl.
-\fBgrep\fR:search for messages
-\fBpull\fR:download messages
-\fBpush\fR:upload messages
-.TE
-.Sh OPTIONS
-.Pp
+.PP
+.SH COMMANDS
+.PP
+One of the following three commands must be supplied.  In every case
+the arguments given after the command may be read from the command
+line or piped to STDIN.
+.PP
+.TP
+\fBgrep\fR [\fBkey value\fB]...
+Search the message server for messages whose \fBkey\fR field matches
+\fBvalue\fR, where \fBvalue\fR is a regular expression.
+.TP
+\fBpull\fR [\fBhash\fR]...
+Pull all messages matching the supplied \fBhash\fR(es).  Shortened
+hash prefixes may be given in which case all messages matching the
+prefix will be returned.  Downloaded messages are unpacked and printed
+to STDOUT.
+.TP
+\fBpush\fR [\fBmessage\fR]... [\fBcontent\fR]
+If packaged JSON messages are supplied then upload them to the message
+server.  If raw \fBcontent\fR is supplied then package the
+\fBcontent\fR using
+dis-pack(1)
+and upload the resulting message to the message server.  The extra
+options available for \fBpush\fR will be passed through to
+\fBdis-pack\fR.  The hashes of all uploaded messages will be printed
+to STDOUT.
+.SH OPTIONS
+.PP
 The following options may be used in combination with any command.
-.Pp
+.PP
 .TP
-\fB\-A\fR, \fB\-\-show\-all\fR
-equivalent to \fB\-vET\fR
+\fB\-H\fR, \fB\-\-host\fR \fIHOST\fR
+host name of the remote message server
 .TP
-\fB\-b\fR, \fB\-\-number\-nonblank\fR
-number nonempty output lines, overrides \fB\-n\fR
-.Pp
+\fB\-p\fR, \fB\-\-port\fR \fIPORT\fR
+port on which the remote message server is listening
+.TP
+\fB\-j\fR, \fB\-\-json\fR
+print the raw JSON values returned by the server, do not unpack
+.TP
+\fB\-n\fR, \fB\-\-dry-run\fR
+print all commands to STDOUT instead of sending to the remote server
+.PP
 The following options may only be used with the \fBpush\fR command.
-.\" The following commands should be uncommented and
-.\" used where appropriate.
-.\" .Sh IMPLEMENTATION NOTES
-.\" This next command is for sections 2, 3 and 9 function
-.\" return values only.
-.\" .Sh RETURN VALUES
-.\" This next command is for sections 1, 6, 7 and 8 only.
-.\" .Sh ENVIRONMENT
-.\" .Sh FILES
-.Sh EXAMPLES
-.\" This next command is for sections 1, 6, 7, 8 and 9 only
-.\"     (command return values (to shell) and
-.\"     fprintf/stderr type diagnostics).
-.\" .Sh DIAGNOSTICS
-.\" .Sh COMPATIBILITY
-.\" This next command is for sections 2, 3 and 9 error
-.\"     and signal handling only.
-.\" .Sh ERRORS
-.\" .Sh SEE ALSO
-.\" .Sh STANDARDS
-.\" .Sh HISTORY
-.Sh AUTHORS
+.PP
+.TP
+\fB\-s\fR, \fB\-\-sign\fR
+Sign the message with GPG.  The user is read from the
+\fBDIS_SIGNATORY\fR or \fBGPGKEY\fR environment variables.
+.TP
+\fB\-S\fR, \fB\-\-signatory\fR [\fBUSER\fR]
+Use the GPG key \fBUSER\fR to sign the message.
+.TP
+\fB\-e\fR, \fB\-\-encrypt\fR [\fBUSER\fR]
+Encrypt the message with GPG so that only recipient \fBUSER\fR will be
+able to decrypt its contents.  This option may be given multiple time
+to encrypt a message for decryption by multiple recipients.  Unless
+the \fB\-hide\fR option is given, a list of message recipients will be
+printed in the publicly visible portion of the message.
+.TP
+\fB\-I\fR, \fB\-\-hide\fR
+Do not place a recipient list in the unencrypted portion of the
+message.
+.PP
+.SH EXAMPLES
+.PP
+.B dis grep content foo|dis pull
+.PP
+Download all messages whose \fBcontent\fR field matches the regular
+expression \fBfoo\fR and print them to STDOUT.
+.PP
+.B cat /tmp/foo|dis push -s
+.PP
+Package the contents of \fB/tmp/foo\fR into a message, sign the
+messages contents and upload the message to the server printing the
+hash of the resulting message to STDOUT.
+.PP
+.B dis pull -j 4bf26132
+.PP
+Download the message with hash prefix \fB4bf26132\fR from the message
+server and print the entire JSON message representation to STDOUT.
+.PP
+.SH AUTHORS
 Written by Eric Schulte.
-.\" .Sh BUGS
