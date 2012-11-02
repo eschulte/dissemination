@@ -14,7 +14,6 @@ HOST:=moons.cs.unm.edu:public_html/data/
 
 MAN = \
 	dis.1 \
-	dis.7 \
 	pack.1 \
 	server.1
 MANPAGES=$(addprefix man/, $(MAN))
@@ -39,6 +38,7 @@ install:
 	mkdir -p $(BINDIR) $(DOCDIR) $(LICDIR) $(MANDIR) $(MN7DIR);
 	install -D $(SCRIPTS) $(BINDIR);
 	install -Dm644 $(MANPAGES) $(MANDIR);
+	install -Dm644 man/dis.7 $(MN7DIR);
 	chmod a-x $(BINDIR)dis-common;
 	man -l -Tascii man/dis.7 >> $(BINDIR)messages.cgi;
 	man -l -Tascii man/dis.7 > $(DOCDIR)dissemination.txt;
@@ -50,7 +50,8 @@ dist-package: js/README.md js/package.json js/server.js js/server.coffee
 	cp js/package.json $(BUILD_DIR);
 	cp js/server.js js/server.coffee $(BUILD_DIR);
 	cp $(MANPAGES) $(MANBLD);
-	gzip $(MANBLDPAGES);
+	cp man/dis.7 $(MANBLD);
+	gzip $(MANBLDPAGES) $(MANBLD)dis.7;
 	cp $(SCRIPTS) $(BINBLD);
 	chmod -x $(BINBLD)/dis-common;
 	man -l -Tascii man/dis.7 >> $(BINBLD)messages.cgi;
