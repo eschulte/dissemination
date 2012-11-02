@@ -38,6 +38,8 @@ install:
 	mkdir -p $(BINDIR) $(DOCDIR) $(LICDIR) $(MANDIR) $(MN7DIR);
 	install -D $(SCRIPTS) $(BINDIR);
 	install -Dm644 $(MANPAGES) $(MANDIR);
+	mv $(MANDIR)server.1 $(MANDIR)dis-server.1;
+	mv $(MANDIR)pack.1 $(MANDIR)dis-pack.1;
 	install -Dm644 man/dis.7 $(MN7DIR);
 	chmod a-x $(BINDIR)dis-common;
 	man -l -Tascii man/dis.7 >> $(BINDIR)messages.cgi;
