@@ -8,13 +8,37 @@
 .\" This next command is for sections 2 and 3 only.
 .\" .Sh LIBRARY
 .Sh SYNOPSIS
-.B dis
-[
-.I "options"
-]
-.RB command
-.br
+\fBdis\fR \fICOMMAND\fR [\fIOPTION\fR]... [\fIFILE\fR]
 .Sh DESCRIPTION
+.Pp
+Interface to dissemination message servers.  Supports searching,
+downloading and unpacking messages as well as packaging and uploading
+messages. See
+.Xr dissemination 7
+for more information on the distributed information dissemination
+system.
+.Pp
+One of the following three commands must be supplied.
+.Pp
+.TS
+tab(:);
+rl.
+\fBgrep\fR:search for messages
+\fBpull\fR:download messages
+\fBpush\fR:upload messages
+.TE
+.Sh OPTIONS
+.Pp
+The following options may be used in combination with any command.
+.Pp
+.TP
+\fB\-A\fR, \fB\-\-show\-all\fR
+equivalent to \fB\-vET\fR
+.TP
+\fB\-b\fR, \fB\-\-number\-nonblank\fR
+number nonempty output lines, overrides \fB\-n\fR
+.Pp
+The following options may only be used with the \fBpush\fR command.
 .\" The following commands should be uncommented and
 .\" used where appropriate.
 .\" .Sh IMPLEMENTATION NOTES
