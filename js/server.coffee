@@ -52,8 +52,8 @@ server = (socket) ->
           when 'grep' then grep socket, msg_data
           else
             socket.end 'unsupported action\n'
-      catch e then socket.end "error: #{e}\nparsing: #{str.substr 5}"
-  socket.on 'error', (err) -> console.error "server socket error: #{err}"
+      catch e then socket.end "server processing #{e}"
+  socket.on 'error', (err) -> console.error "server socket #{err}"
 
 # read a (list of) message(s) and add them to the local message store
 push = (socket, msgs) ->
