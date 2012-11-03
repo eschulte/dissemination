@@ -59,7 +59,12 @@ if [ -z "$args" ];then
         error "Must supply message(s) to push."
     fi
 fi
-
+if [ "$cmd" != "pull" ] &&
+   [ "$cmd" != "push" ] &&
+   [ "$cmd" != "grep" ];then
+    echo "$0: '$cmd' is not a dis command. See 'dis --help'." >&2
+    exit 1
+fi
 run(){
     case "$cmd" in
         pull) echo -E "pull $(to_array  $args)";;
@@ -75,8 +80,6 @@ run(){
                 echo -E "push [$(echo "$args"|dis-pack $PACK_ARGS)]"
               fi;;
         grep) echo -E "grep $(to_object $args)";;
-        *)    echo "$0: '$cmd' is not a dis comment. See 'dis --help'." >&2
-              exit 1;;
     esac
 }
 
