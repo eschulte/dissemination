@@ -13,7 +13,7 @@ base:
 
 config.js:
 	echo "// Holds optional cofiguration" > $@
-	echo "post_save_hook.push(save)"     >> $@
+	echo "post_save_hook.push(save);"     >> $@
 
 package.json: package_template.json
 	cp $< $@; sed -i 's/VERSION/$(VERSION)/' $@;

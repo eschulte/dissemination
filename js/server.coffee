@@ -58,12 +58,14 @@ server = (socket) ->
 # read a (list of) message(s) and add them to the local message store
 push = (socket, msgs) ->
   added = []; msgs = (wrap msgs)
-  try (msgs = hook msgs for hook in pre_save_hook) catch e
+  thread = (prev,curr) -> (arg) -> curr(arg,prev)
+  cont = (msgs) ->
+    for msg in (wrap msgs) when msg.hash and not (msg.hash of all)
+      added.push msg; all[msg.hash] = msg
+    (hook added, socket for hook in post_save_hook) if added.length > 0
+    socket.end  JSON.stringify(msg.hash for msg in added)+'\n'
+  try (pre_save_hook.reverse().reduce thread, cont) msgs catch e
     socket.end "pre_save_hook error: #{e}"; msgs=[]
-  for msg in (wrap msgs) when msg.hash and not (msg.hash of all)
-    added.push msg; all[msg.hash] = msg
-  (hook added, socket for hook in post_save_hook) if added.length > 0
-  socket.end  JSON.stringify(msg.hash for msg in added)+'\n'
 
 # read a (list of) hash prefix(es) and return the identified messages
 pull = (socket, hashes) ->
@@ -84,8 +86,8 @@ share = (msgs, socket) ->
     console.log "#{msgs.length} messages -> #{remote.host}:#{remote.port}"
     send remote, msgs
 
-verify_signatures = (msgs) ->
-  (msg for msg in msgs when (not msg.signature) or gpg.verify(msg.signature, msg.content))
+verify_signatures = (msgs, cb) ->
+  cb (msg for msg in msgs when (not msg.signature) or gpg.verify(msg.signature, msg.content))
 
 fs.exists config, (exists) ->
   fs.readFile config, 'utf8', (err,data) ->
