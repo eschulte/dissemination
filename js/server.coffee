@@ -17,7 +17,7 @@ fs.readFile base, 'utf8', (err,data) ->
   try json = "[#{(data.replace(/\s\s*$/, '').replace /(\n|\r)/gm, ', ')}]"
   catch err then console.error "error parsing database:#{err}"
   total = (all[msg.hash] = msg for msg in (JSON.parse json)).length
-  console.log "loaded #{total} messages"
+  console.log "#{total} messages <- #{base}"
 
 
 ## Utility
@@ -28,8 +28,8 @@ wrap = (it) -> if it instanceof Array then it else [it]
 startsWith = (str,pre) -> str.substr(0,pre.length) == pre
 
 save = () ->
-  console.log "saving"
   fs.writeFile base, ((JSON.stringify v for k,v of all).join '\n') + '\n', 'utf8'
+  console.log "#{Object.keys(all).length} messages -> #{base}"
 
 send = (remote, msgs) ->
   socket = net.createConnection remote, () ->
