@@ -32,11 +32,10 @@ save = () ->
   console.log "#{Object.keys(all).length} messages -> #{base}"
 
 send = (remote, msgs) ->
-  socket = net.createConnection remote, () ->
-    socket.write "push "+JSON.stringify msgs
-  socket.on 'data', (data) -> socket.end()
-  socket.on 'error', (err) ->
-    console.error "send(remote=#{JSON.stringify remote}): #{err}"
+  sock = net.createConnection remote
+  sock.on 'connect', () -> sock.write "push #{JSON.stringify msgs}\n"
+  sock.on 'data', (data) -> sock.end()
+  sock.on 'error', (err) -> console.error "send(#{JSON.stringify remote}): #{err}"
 
 
 ## Server
