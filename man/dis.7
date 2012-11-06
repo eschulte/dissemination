@@ -9,17 +9,16 @@
 The "dissemination" information dissemination system is a protocol
 rather than a tool, however, both a server and a command line client
 which implement this protocol are distributed with this document.  See
-[man dis-server] for more information on the server and [man
-dis-server] for more information on the command line client.
+[man dis-server] for more information on the server and [man dis] for
+more information on the command line client.
 .Pp
 This document describes a distributed system for the dissemination of
 messages.  The core of the system is a loose network of servers which
 share messages similar in architecture to Usenet.  Messages are
 serialized as JSON hashes.  Messages are signed or encrypted using PGP
 public and private keys.  Authorship is fully specified through PGP
-signatures rather than network addresses (either email or IP) as is
-currently standard.  The primary goals are simplicity, security,
-privacy, and robust operation.
+signatures rather than network addresses (either email or IP).  The
+primary goals are simplicity, security, privacy, and robust operation.
 .
 .Sh DESCRIPTION
 .
