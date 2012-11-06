@@ -4,7 +4,7 @@ BINDIR=$(DESTDIR)/usr/bin/
 DOCDIR=$(DESTDIR)/usr/share/doc/dissemination/
 MN7DIR=$(DESTDIR)/usr/share/man/man7/
 MANDIR=$(DESTDIR)/usr/share/man/man1/
-LICDIR=$(DESTDIR)/usr/share/liscences/dissemination/
+LICDIR=$(DESTDIR)/usr/share/licenses/dissemination/
 
 BUILD_DIR:=build
 BINBLD=$(BUILD_DIR)/bin/
