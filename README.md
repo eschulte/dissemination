@@ -14,10 +14,12 @@ private keys.  Authorship is fully specified through PGP signatures
 rather than network addresses (either email or IP).  The primary goals
 are simplicity, security, privacy, and robust operation.
 
-This repository provides an npm package for node.js which includes a
-message server and a command-line tool for communicating with message
-servers.  The command line tools may also be installed separate from
-the server as an Arch Linux AUR package.
+This repository provides an
+[NPM package](http://cs.unm.edu/~eschulte/data/dis.tgz) for node.js
+which includes a message server and a command-line tool for
+communicating with message servers.  The command line tools may also
+be installed separate from the server as an Arch Linux
+[AUR package](http://cs.unm.edu/~eschulte/data/dissemination-git.src.tar.gz).
 
 See the man pages for more information.  To view the man pages locally
 run the following from the base of this repository.
