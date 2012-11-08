@@ -1,0 +1,14 @@
+#!/bin/bash
+#
+# usage: dis-url [URL]
+#
+# Associate this link with your web browser to display 
+# links of the form dis://HASH
+#
+# With Conkeror, you can simply add the following to .conkerorrc
+#   set_protocol_handler("dis", find_file_in_path("dis-url"));
+#
+# TODO: write a component, specifically a nsIProtocolHandler component
+#
+HASH=$(echo "$1"|cut -c7-)
+echo $HASH|dis pull > /tmp/$HASH.txt && conkeror file:///tmp/$HASH.txt
