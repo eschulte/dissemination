@@ -10,5 +10,22 @@
 #
 # TODO: write a component, specifically a nsIProtocolHandler component
 #
-HASH=$(echo "$1"|cut -c7-)
-echo $HASH|dis pull > /tmp/$HASH.txt && conkeror file:///tmp/$HASH.txt
+BROWSER=conkeror
+
+is_a_hash(){
+    local string=$1;
+    [[ $(echo -n "$string"|sed 's/[a-z0-9]//g'|wc -c) -eq 0 ]]
+}
+
+to_file(){
+    local hash=$1;
+    if $(is_a_hash "$hash");then
+        file="/tmp/dis-$hash.txt"
+        echo $hash|dis pull > $file && echo file://$file
+    else
+        echo "'$hash' is not a valid hash" > /tmp/dis-error.txt
+        echo /tmp/dis-error.txt
+    fi
+}
+
+$BROWSER $(to_file "$(echo "$1"|cut -c7-)")
