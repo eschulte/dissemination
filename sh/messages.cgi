@@ -104,7 +104,7 @@ Content-type: text/html
 <li><a href="?doc=yes">Documentation</a></li>
 <li><a href="http://cs.unm.edu/~eschulte/data/dis.tgz">NPM package</a></li>
 <li><a href="http://cs.unm.edu/~eschulte/data/dissemination-git.src.tar.gz">AUR package</a></li>
-<li><a href="https://github.com/eschulte/dissemination">github</li>
+<li><a href="https://github.com/eschulte/dissemination">github</a></li>
 </ul>
 <form method="GET" action="messages.cgi">
   <p>
