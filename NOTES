@@ -129,6 +129,9 @@ Maps urls like http://msgs/3fde0842 to http://other.host/messages.cgi?hash=3fde0
 :   </Directory>
 : </VirtualHost>
 
+** distributed chat with CouchDB
+http://mail-archives.apache.org/mod_mbox/couchdb-user/201211.mbox/%3c20121124031418.GA1797@canonical.org%3e
+
 ** Relevant Links
 *** Twitter-like services
 - http://www.twhirl.org/
