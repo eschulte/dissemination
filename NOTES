@@ -106,6 +106,15 @@ for this error
 : npm ERR! not ok code 0
 
 * Notes
+** maybe this could be built as a CouchDB App
+- information on writing a CouchDB App http://couchapp.org/page/index
+- see this email suggestion [[*distributed%20chat%20with%20CouchDB][distributed chat with CouchDB]]
+
+Should not violate the existing design, including
+- do not trust the message server
+- all encryption/decryption is done locally
+- all user handling is offloaded to the PGP system
+
 ** Example combining messages.cgi with Apache proxy
 Useful for very short URLs
 
