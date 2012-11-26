@@ -109,6 +109,10 @@ for this error
 ** maybe this could be built as a CouchDB App
 - information on writing a CouchDB App http://couchapp.org/page/index
 - see this email suggestion [[*distributed%20chat%20with%20CouchDB][distributed chat with CouchDB]]
+- here's a tool for uploading couchapps
+  https://github.com/mikeal/node.couchapp.js
+- here's documentation for writing couch apps
+  http://guide.couchdb.org/draft/transforming.html
 
 Should not violate the existing design, including
 - do not trust the message server
