@@ -10,6 +10,19 @@ var ddoc = {
 module.exports = ddoc;
 
 
+/// Validation functions
+
+ddoc.validate_doc_update = function(new_doc, old_doc, user_ctx){
+  // TODO: The hash must match the actual hash value of the contents
+  // TODO: If there is an author, the rest must be signed
+  // nothing can change, ever.
+  if(old_doc && toJSON(old_doc) != toJSON(new_doc))
+  { throw({ forbidden : "Documents are immutable." }); }
+
+  return true;
+}
+
+
 /// Views (return documents)
 
 // All documents -- http://localhost:5984/foo/_design/app/_view/all
@@ -27,12 +40,15 @@ ddoc.views.date = {
 // http://localhost:5984/foo/_design/app/_list/w_link/date
 ddoc.lists.w_link = function(doc, req) {
   start({ headers: {"Content-type": "text/html"} });
+  // list all documents
   send("<dl>\n");
   while(row = getRow()) {
     send("\t<dt><a href=\"../../_show/it/" + row.value._id + "\">"+row.key+"</a></dt>\n");
     if (row.value.content) { send("\t<dd>" + row.value.content + "</dd>\n"); }
     else { send("\t<dd>--</dd>\n"); } }
-  send("</dl>\n"); }
+  send("</dl>\n");
+  // a form to add a new document
+  send("<p><span style=\"color:red;\">TODO</span>: make it possible to add new _id'd documents with a PUT.</p>"); }
 
 
 /// Shows (view a document)
