@@ -5,10 +5,11 @@
 ** TODO talk to the server through SSL
 this should be possible if not the default
 
-** TODO drop in new server backend -- redis
+** TODO drop in new server backend -- redis or couchdb
 This should be easy, goal is to keep server.coffee <= 100 LOC.
 
-http://redis.io
+- http://redis.io
+- http://couchdb.apache.org/
 
 ** TODO read about "homologous encryption" and "shared secrets"
 with respect to GPG public/private key pairs.
