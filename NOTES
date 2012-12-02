@@ -1,7 +1,20 @@
 # Notes                                                      -*- org -*-
 #+Options: ^:nil
 
-* Tasks [0/7]
+* Tasks [0/8]
+** TODO build as a CouchDB App
+- information on writing a CouchDB App http://couchapp.org/page/index
+- see this email suggestion [[*distributed%20chat%20with%20CouchDB][distributed chat with CouchDB]]
+- here's a tool for uploading couchapps
+  https://github.com/mikeal/node.couchapp.js
+- here's documentation for writing couch apps
+  http://guide.couchdb.org/draft/transforming.html
+
+Should not violate the existing design, including
+- do not trust the message server
+- all encryption/decryption is done locally
+- all user handling is offloaded to the PGP system
+
 ** TODO talk to the server through SSL
 this should be possible if not the default
 
@@ -107,19 +120,6 @@ for this error
 : npm ERR! not ok code 0
 
 * Notes
-** maybe this could be built as a CouchDB App
-- information on writing a CouchDB App http://couchapp.org/page/index
-- see this email suggestion [[*distributed%20chat%20with%20CouchDB][distributed chat with CouchDB]]
-- here's a tool for uploading couchapps
-  https://github.com/mikeal/node.couchapp.js
-- here's documentation for writing couch apps
-  http://guide.couchdb.org/draft/transforming.html
-
-Should not violate the existing design, including
-- do not trust the message server
-- all encryption/decryption is done locally
-- all user handling is offloaded to the PGP system
-
 ** Example combining messages.cgi with Apache proxy
 Useful for very short URLs
 
