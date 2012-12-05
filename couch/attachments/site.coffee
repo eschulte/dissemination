@@ -28,7 +28,7 @@ window.update = () ->
   $.get 'templates/message.html', (d) -> msgs_tmpl = d
 
   # get the data
-  $.getJSON '_view/created_at', (d) -> $.extend(data, d)
+  $.getJSON '_view/chats', (d) -> $.extend(data, d)
 
   $(document).ajaxStop () ->
     $('#meta').html (Mustache.to_html meta_tmpl, data)

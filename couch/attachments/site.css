@@ -16,8 +16,19 @@ div#msgs {
     padding: 1em;
 }
 
-div#msgs dt {
-    padding: 0.5em;
+div#msgs ul {
+    list-style: none;
+}
+
+div#msgs li {
+    padding: 0.125em;
+}
+
+div#msgs span.author {
+    width: 4em;
+    border-right: 1px solid #3D3D3D;
+    margin-right: 0.5em;
+    padding-right: 0.5em;
 }
 
 input#to-put {

@@ -1,1 +1,6 @@
-<ul>{{#rows}}<li>{{value.content}}</li>{{/rows}}</ul>
+<ul>
+  {{#rows}}
+  <li><span class="author">{{value.author}}</span>
+    {{value.content}}</li>
+  {{/rows}}
+</ul>
