@@ -34,7 +34,7 @@ sha1(){
     # TODO: update to reflect the new hashing described in the docs
     local content="$@";
     local length=$(expr length "$content");
-    echo -n "\"content\" $length $content"|sha1sum|cut -c-40
+    echo -n "\"content\" $length $content"|md5sum|cut -c-40
 }
 
 stdinpipe(){
