@@ -2,7 +2,7 @@
 #+Options: ^:nil
 
 * Tasks [0/8]
-** TODO build as a CouchDB App
+** TODO build as a CouchDB App [0/4]
 - information on writing a CouchDB App http://couchapp.org/page/index
 - see this email suggestion [[*distributed%20chat%20with%20CouchDB][distributed chat with CouchDB]]
 - here's a tool for uploading couchapps
@@ -19,6 +19,12 @@ Now that there is a validation function, it is possible to add
 documents from the command line with.
 : curl -i -H "Accept: application/json" -d '{ "content":"some stuff" }' -X PUT http://localhost:5984/foo/putz
 
+*** TODO automatically refresh views when data changes
+http://stackoverflow.com/questions/6991948/using-knockout-js-with-couchdb-updating-when-changed
+
+*** TODO continuous replication
+*** TODO using ssl for all connections
+*** TODO url rewriting (and virtual hosts)
 ** TODO talk to the server through SSL
 this should be possible if not the default
 
