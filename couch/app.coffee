@@ -52,7 +52,6 @@ ddoc.lists.w_link = (doc, req) ->
 
 
 # Shows (view a document)
-
 # http://localhost:5984/foo/_design/app/_show/it/test
 ddoc.shows.it = (doc, req) ->
     headers: {"Content-type": "text/html"}
