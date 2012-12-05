@@ -1,6 +1,6 @@
 meta_tmpl = ""
 msgs_tmpl = ""
-data = {}
+window.data = {}
 
 # function to handle putting up new messages
 window.post = () ->
@@ -28,11 +28,14 @@ window.update = () ->
   $.get 'templates/message.html', (d) -> msgs_tmpl = d
 
   # get the data
-  $.getJSON '_view/chats', (d) -> $.extend(data, d)
+  $.getJSON '_view/created_at', (d) -> $.extend(window.data, d)
 
   $(document).ajaxStop () ->
-    $('#meta').html (Mustache.to_html meta_tmpl, data)
-    $('#msgs').html (Mustache.to_html msgs_tmpl, data)
+    $('#meta').html (Mustache.to_html meta_tmpl, window.data)
+    window.data.rows = for msg in window.data.rows
+      msg.value.author = msg.value.author or 'anonymous'
+      msg
+    $('#msgs').html (Mustache.to_html msgs_tmpl, window.data)
 
 # perform the initial update
 window.update()

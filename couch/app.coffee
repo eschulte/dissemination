@@ -33,7 +33,7 @@ ddoc.validate_doc_update = (new_doc, old_doc, user_ctx) ->
 # http://localhost:5984/foo/_design/app/_view/date
 ddoc.views.all  = map: (doc) -> emit doc._id, doc
 ddoc.views.created_at = map: (doc) -> emit doc.created_at, doc if (doc.created_at)
-ddoc.views.chats = map: (doc) -> emit doc.created_at, doc if (doc.created_at and doc.author)
+ddoc.views.authored = map: (doc) -> emit doc.created_at, doc if (doc.created_at and doc.author)
 
 
 # Lists (generate html from a view)

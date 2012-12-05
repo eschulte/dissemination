@@ -21,11 +21,14 @@ div#msgs ul {
 }
 
 div#msgs li {
-    padding: 0.125em;
+    /* padding: 0.125em; */
 }
 
 div#msgs span.author {
-    width: 4em;
+    display: inline-block;
+    min-width: 8em;
+    overflow: hidden;
+    text-align: right;
     border-right: 1px solid #3D3D3D;
     margin-right: 0.5em;
     padding-right: 0.5em;
