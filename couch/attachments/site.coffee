@@ -6,15 +6,16 @@ data = {}
 window.post = () ->
   content = $('#to-put').val()
   if content.length > 0
-    hash = hex_md5(content)
     $('#to-put').val('')
+    packed = window.pack
+        content: content
+        author: window.who
+        created_at: (new Date)
     $.ajax
       type: "PUT"
-      url: "../../#{hash}"
+      url: "../../#{packed.hash}"
       contentType: "application/json"
-      data: JSON.stringify
-        content: content
-        created_at: (new Date)
+      data: JSON.stringify packed
       complete: window.update
 
 # function to update message list
@@ -35,3 +36,6 @@ window.update = () ->
 
 # perform the initial update
 window.update()
+
+# lets get a username
+window.who = "eschulte"
