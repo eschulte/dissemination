@@ -32,7 +32,7 @@ ddoc.validate_doc_update = (new_doc, old_doc, user_ctx) ->
 # http://localhost:5984/foo/_design/app/_view/all
 # http://localhost:5984/foo/_design/app/_view/date
 ddoc.views.all  = map: (doc) -> emit doc._id, doc
-ddoc.views.date = map: (doc) -> emit doc.date, doc if (doc.date)
+ddoc.views.created_at = map: (doc) -> emit doc.created_at, doc if (doc.created_at)
 
 
 # Lists (generate html from a view)
@@ -54,5 +54,5 @@ ddoc.lists.w_link = (doc, req) ->
 # Shows (view a document)
 # http://localhost:5984/foo/_design/app/_show/it/test
 ddoc.shows.it = (doc, req) ->
-    headers: {"Content-type": "text/html"}
+    headers: { "Content-type": "text/html" }
     body: "<p>#{if (doc.content) then doc.content else '--'}</p>\n"
