@@ -4,8 +4,26 @@ body {
 }
 
 div {
-    margin: 1em auto;
-    padding: 1em;
     border: 2px solid #3D3D3D;
     font-family: monospace;
+}
+
+div#meta {
+    font-size: small;
+    float: right;
+    padding: 0.5em;
+}
+
+div#msgs {
+    margin: 1em auto;
+    padding: 1em;
+}
+
+div#msgs dt {
+    padding: 1em;
+    border-top: 1px solid #3D3D3D;
+}
+
+div#msgs dd {
+    padding-bottom: 1em;
 }
