@@ -1,7 +1,4 @@
-body {
-    background: gray;
-    color: white;
-}
+body {}
 
 div {
     border: 2px solid #3D3D3D;
@@ -20,10 +17,5 @@ div#msgs {
 }
 
 div#msgs dt {
-    padding: 1em;
-    border-top: 1px solid #3D3D3D;
-}
-
-div#msgs dd {
-    padding-bottom: 1em;
+    padding: 0.5em;
 }
