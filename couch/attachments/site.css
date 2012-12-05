@@ -19,3 +19,7 @@ div#msgs {
 div#msgs dt {
     padding: 0.5em;
 }
+
+input#to-put {
+    width: 100%;
+}
