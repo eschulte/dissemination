@@ -4,8 +4,11 @@ path     = require 'path'
 ddoc =
   _id:'_design/app'
   rewrites: [ # http://localhost:5984/foo/_design/app/_rewrite/
-    { from:'/',     to:'index.html' }
-    { from:'msg/*', to:'_show/it/*' }
+    { from:'/',      to:'index.html' }
+    { from:'/api',   to:'../../' }
+    { from:'/api/*', to:'../../*' }
+    { from:'/*',     to:'*' }
+    { from:'msg/*',  to:'_show/it/*' }
   ]
   views: {}
   lists: {}
@@ -28,35 +31,14 @@ ddoc.validate_doc_update = (new_doc, old_doc, user_ctx) ->
 
 
 # Filters
-ddoc.filters = created_at: (doc, req) -> true if doc.created_at
+ddoc.filters = chats: (doc, req) -> true if doc.created_at
 
 
 # Views (return documents)
-# http://localhost:5984/foo/_design/app/_view/all
-# http://localhost:5984/foo/_design/app/_view/date
-ddoc.views.all  = map: (doc) -> emit doc._id, doc
-ddoc.views.created_at = map: (doc) -> emit doc.created_at, doc if (doc.created_at)
-ddoc.views.authored = map: (doc) -> emit doc.created_at, doc if (doc.created_at and doc.author)
-
-
-# Lists (generate html from a view)
-# http://localhost:5984/foo/_design/app/_list/w_link/all
-# http://localhost:5984/foo/_design/app/_list/w_link/date
-ddoc.lists.w_link = (doc, req) ->
-  start headers: "Content-type": "text/html"
-  # list all documents
-  send "<dl>\n"
-  while row = getRow()
-    send "<dt><a href=\"../../_show/it/#{row.value._id}\">#{row.key}</a></dt>"
-    send "<dd>#{if row.value.content then row.value.content else '--'}</dd>"
-  send "</dl>"
-  # a form to add a new document
-  send "<p><span style=\"color:red;\">TODO</span>:"
-  send "make it possible to add new _id'd documents with a PUT.</p>"
+ddoc.views.chats = map: (doc) -> emit doc.created_at, doc if (doc.created_at and doc.author)
 
 
 # Shows (view a document)
-# http://localhost:5984/foo/_design/app/_show/it/test
 ddoc.shows.it = (doc, req) ->
     headers: { "Content-type": "text/html" }
     body: "<p>#{if (doc.content) then doc.content else '--'}</p>\n"

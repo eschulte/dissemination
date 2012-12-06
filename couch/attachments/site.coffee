@@ -29,7 +29,7 @@ window.put = () ->
         created_at: (new Date)
     $.ajax
       type: "PUT"
-      url: "../../#{packed.hash}"
+      url: "api/#{packed.hash}"
       contentType: "application/json"
       data: JSON.stringify packed
 
@@ -37,7 +37,7 @@ window.put = () ->
 window.start_poll = () ->
   last = 0
   conn = (new XMLHttpRequest())
-  conn.open("GET", "../../_changes?feed=continuous&filter=app/created_at")
+  conn.open("GET", "api/_changes?feed=continuous&filter=app/chats")
   conn.send(null)
   conn.onreadystatechange = () ->
     latest = conn.responseText.substring(last)
@@ -49,7 +49,7 @@ window.start_poll = () ->
         if line.last_seq
           $('meta[name=last-msg]').attr 'content', line.last_seq
         else
-          $.getJSON "../../#{line.id}", window.add_message
+          $.getJSON "api/#{line.id}", window.add_message
     window.start_poll if conn.readyState == conn.DONE
 
 # Final page setup
