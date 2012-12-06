@@ -1,4 +1,4 @@
-author_len = 12
+author_len = 13
 window.msg_tmpl = ""
 
 # get the message template
@@ -10,7 +10,7 @@ clean_author = (author) ->
   if author.length > author_len
     return author[0..(author_len-3)].concat '...'
   else
-    return "             "[(author.length)..].concat author
+    return "              "[(author.length)..].concat author
 
 window.add_message = (msg) ->
   $('#msgs').append (Mustache.to_html window.msg_tmpl,

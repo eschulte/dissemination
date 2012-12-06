@@ -3,7 +3,9 @@ div { border: 2px solid #3D3D3D; }
 pre#msgs {
     padding: 1em 0.75em;
     height: 80%;
-    overflow: auto; }
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word; }
 
 input#to-who { width: 8.5em; }
 input#to-put { width: 100%; }
