@@ -1,8 +1,9 @@
-body {}
+body {
+    font-family: "Courier", monospace;
+}
 
 div {
     border: 2px solid #3D3D3D;
-    font-family: monospace;
 }
 
 div#meta {
@@ -13,25 +14,32 @@ div#meta {
 
 div#msgs {
     margin: 1em auto;
-    padding: 1em;
+    padding: 1em 0.75em;
 }
 
-div#msgs ul {
-    list-style: none;
+td.put-author {
+    width: 8em;
 }
 
-div#msgs li {
-    /* padding: 0.125em; */
-}
-
-div#msgs span.author {
-    display: inline-block;
-    min-width: 8em;
-    overflow: hidden;
+td.msg-author {
     text-align: right;
-    border-right: 1px solid #3D3D3D;
     margin-right: 0.5em;
     padding-right: 0.5em;
+    border-right: 1px solid #3D3D3D;
+}
+
+span.author {
+    float: left;
+    width: 6em;
+    overflow: hidden;
+}
+
+td.message {
+    width:100%;
+}
+
+input#to-who {
+    width: 8.5em;
 }
 
 input#to-put {

@@ -1,15 +1,16 @@
 meta_tmpl = ""
 msgs_tmpl = ""
+limit = 20
 window.data = {}
 
-# function to handle putting up new messages
-window.post = () ->
+# PUT a new messages to the server
+window.put = () ->
   content = $('#to-put').val()
   if content.length > 0
     $('#to-put').val('')
     packed = window.pack
         content: content
-        author: window.who
+        author: $('#to-who').val()
         created_at: (new Date)
     $.ajax
       type: "PUT"
@@ -18,27 +19,30 @@ window.post = () ->
       data: JSON.stringify packed
       complete: window.update
 
-# function to update message list
+# Update the full message list
 window.update = () ->
-  # ENTER on #to-put calls post()
-  $('#to-put').keypress (e) ->
-    post() if (e.which == 13)
   # get the templates
   $.get 'templates/meta.html',    (d) -> meta_tmpl = d
   $.get 'templates/message.html', (d) -> msgs_tmpl = d
 
   # get the data
-  $.getJSON '_view/created_at', (d) -> $.extend(window.data, d)
+  $.getJSON("_view/created_at?descending=true&limit=#{limit}",
+            (d) -> $.extend(window.data, d))
 
   $(document).ajaxStop () ->
-    $('#meta').html (Mustache.to_html meta_tmpl, window.data)
-    window.data.rows = for msg in window.data.rows
+    range =
+      start: window.data.total_rows - limit
+      end: window.data.total_rows
+    $('#meta').html (Mustache.to_html meta_tmpl, range)
+    temp = rows: []
+    for msg in window.data.rows
       msg.value.author = msg.value.author or 'anonymous'
-      msg
-    $('#msgs').html (Mustache.to_html msgs_tmpl, window.data)
+      temp.rows = [msg].concat temp.rows
+    $('#msgs').html (Mustache.to_html msgs_tmpl, temp)
 
-# perform the initial update
+# Initial page setup
 window.update()
-
-# lets get a username
-window.who = "eschulte"
+$('#to-who').val('anonymous')
+# ENTER on #to-put calls put()
+$('#to-put').keypress (e) ->
+  put() if (e.which == 13)

@@ -1,6 +1,8 @@
-<ul>
+<table>
   {{#rows}}
-  <li><span class="author">{{value.author}}</span>
-    {{value.content}}</li>
+  <tr>
+    <td class="msg-author"><span class="author">{{value.author}}</span></td>
+    <td class="message">{{value.content}}</td>
+  </tr>
   {{/rows}}
-</ul>
+</table>
