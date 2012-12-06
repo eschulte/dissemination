@@ -1,7 +1,22 @@
-meta_tmpl = ""
-msgs_tmpl = ""
-limit = 20
-window.data = {}
+author_len = 12
+window.msg_tmpl = ""
+
+# get the message template
+$.get 'templates/message.html', (d) -> window.msg_tmpl = d
+
+# add a message to the page
+clean_author = (author) ->
+  author = author or 'anonymous'
+  if author.length > author_len
+    return author[0..(author_len-3)].concat '...'
+  else
+    return "             "[(author.length)..].concat author
+
+window.add_message = (msg) ->
+  $('#msgs').append (Mustache.to_html window.msg_tmpl,
+    author: clean_author msg.author
+    content: msg.content)
+  $('#msgs').scrollTop($('#msgs').height())
 
 # PUT a new messages to the server
 window.put = () ->
@@ -17,32 +32,27 @@ window.put = () ->
       url: "../../#{packed.hash}"
       contentType: "application/json"
       data: JSON.stringify packed
-      complete: window.update
 
-# Update the full message list
-window.update = () ->
-  # get the templates
-  $.get 'templates/meta.html',    (d) -> meta_tmpl = d
-  $.get 'templates/message.html', (d) -> msgs_tmpl = d
+# Continuous DB connection
+window.start_poll = () ->
+  last = 0
+  conn = (new XMLHttpRequest())
+  conn.open("GET", "../../_changes?feed=continuous&filter=app/created_at")
+  conn.send(null)
+  conn.onreadystatechange = () ->
+    latest = conn.responseText.substring(last)
+    last = conn.responseText.length
+    if latest.length > 0
+      array = ((a) -> if a.length > 20 then a[20..] else a) latest.split("\n")
+      lines = (JSON.parse line for line in array when line.length > 0)
+      for line in lines
+        if line.last_seq
+          $('meta[name=last-msg]').attr 'content', line.last_seq
+        else
+          $.getJSON "../../#{line.id}", window.add_message
+    window.start_poll if conn.readyState == conn.DONE
 
-  # get the data
-  $.getJSON("_view/created_at?descending=true&limit=#{limit}",
-            (d) -> $.extend(window.data, d))
-
-  $(document).ajaxStop () ->
-    range =
-      start: window.data.total_rows - limit
-      end: window.data.total_rows
-    $('#meta').html (Mustache.to_html meta_tmpl, range)
-    temp = rows: []
-    for msg in window.data.rows
-      msg.value.author = msg.value.author or 'anonymous'
-      temp.rows = [msg].concat temp.rows
-    $('#msgs').html (Mustache.to_html msgs_tmpl, temp)
-
-# Initial page setup
-window.update()
+# Final page setup
 $('#to-who').val('anonymous')
-# ENTER on #to-put calls put()
-$('#to-put').keypress (e) ->
-  put() if (e.which == 13)
+$('#to-put').keypress (e) -> put() if (e.which == 13)
+window.start_poll()

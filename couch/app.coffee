@@ -19,13 +19,16 @@ couchapp.loadAttachments ddoc, (path.join __dirname, 'attachments')
 
 
 # Validation functions
-
 ddoc.validate_doc_update = (new_doc, old_doc, user_ctx) ->
   # TODO: The hash must match the actual hash value of the contents
   # TODO: If there is an author, the rest must be signed
   # nothing can change, ever.
   if (old_doc and (toJSON old_doc) != (toJSON new_doc))
     throw forbidden: "Documents are immutable."
+
+
+# Filters
+ddoc.filters = created_at: (doc, req) -> true if doc.created_at
 
 
 # Views (return documents)

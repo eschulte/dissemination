@@ -1,47 +1,11 @@
-body {
-    font-family: "Courier", monospace;
-}
+div { border: 2px solid #3D3D3D; }
 
-div {
-    border: 2px solid #3D3D3D;
-}
-
-div#meta {
-    font-size: small;
-    float: right;
-    padding: 0.5em;
-}
-
-div#msgs {
-    margin: 1em auto;
+pre#msgs {
     padding: 1em 0.75em;
-}
+    height: 80%;
+    overflow: auto; }
 
-td.put-author {
-    width: 8em;
-}
-
-td.msg-author {
-    text-align: right;
-    margin-right: 0.5em;
-    padding-right: 0.5em;
-    border-right: 1px solid #3D3D3D;
-}
-
-span.author {
-    float: left;
-    width: 6em;
-    overflow: hidden;
-}
-
-td.message {
-    width:100%;
-}
-
-input#to-who {
-    width: 8.5em;
-}
-
-input#to-put {
-    width: 100%;
-}
+input#to-who { width: 8.5em; }
+input#to-put { width: 100%; }
+td.author  { width: 8.5em; }
+td.message { width: 100%; }
