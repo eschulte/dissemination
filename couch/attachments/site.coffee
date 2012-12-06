@@ -49,7 +49,12 @@ window.start_poll = () ->
         if line.last_seq
           $('meta[name=last-msg]').attr 'content', line.last_seq
         else
-          $.getJSON "api/#{line.id}", window.add_message
+          $.ajax
+            type: "GET"
+            url: "api/#{line.id}"
+            dataType: "json"
+            async: false
+            success: window.add_message
     window.start_poll if conn.readyState == conn.DONE
 
 # Final page setup
