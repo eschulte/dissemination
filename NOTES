@@ -1,7 +1,14 @@
 # Notes                                                      -*- org -*-
 #+Options: ^:nil
 
-* Tasks [0/8]
+* Tasks [0/9]
+** TODO GPG functions in the browser
+The following link discusses calling extension functions from HTML.
+http://stackoverflow.com/questions/2017743/how-to-call-a-function-in-firefox-extension-from-a-html-button
+
+More specifics on this sort of thing.
+https://developer.mozilla.org/en-US/docs/How_to_Build_an_XPCOM_Component_in_Javascript
+
 ** TODO build as a CouchDB App [3/5]
 - information on writing a CouchDB App http://couchapp.org/page/index
 - see this email suggestion [[*distributed%20chat%20with%20CouchDB][distributed chat with CouchDB]]
