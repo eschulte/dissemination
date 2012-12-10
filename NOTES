@@ -1,7 +1,14 @@
 # Notes                                                      -*- org -*-
 #+Options: ^:nil
 
-* Tasks [0/9]
+* Tasks [0/11]
+** TODO GPG browser plugin
+This should be a NPAPI plugin, see
+- https://developer.mozilla.org/en-US/docs/Gecko_Plugin_API_Reference
+- https://developer.mozilla.org/en/docs/Plugins
+- http://stackoverflow.com/questions/246071/basic-example-of-a-scriptable-plugin-for-firefox-in-c-with-vs2005-8
+- http://www-archive.mozilla.org/projects/plugins/scripting-plugins.html
+
 ** TODO GPG functions in the browser
 The following link discusses calling extension functions from HTML.
 http://stackoverflow.com/questions/2017743/how-to-call-a-function-in-firefox-extension-from-a-html-button
@@ -9,7 +16,7 @@ http://stackoverflow.com/questions/2017743/how-to-call-a-function-in-firefox-ext
 More specifics on this sort of thing.
 https://developer.mozilla.org/en-US/docs/How_to_Build_an_XPCOM_Component_in_Javascript
 
-** TODO build as a CouchDB App [3/5]
+** TODO build as a CouchDB App [3/6]
 - information on writing a CouchDB App http://couchapp.org/page/index
 - see this email suggestion [[*distributed%20chat%20with%20CouchDB][distributed chat with CouchDB]]
 - here's a tool for uploading couchapps
@@ -25,6 +32,11 @@ Should not violate the existing design, including
 Now that there is a validation function, it is possible to add
 documents from the command line with.
 : curl -i -H "Accept: application/json" -d '{ "content":"some stuff" }' -X PUT http://localhost:5984/foo/putz
+
+*** TODO XMPP translator?
+maybe this could be useful
+- http://www.google.com/url?q=http://www.ibm.com/developerworks/library/x-xmppintro/&sa=U&ei=JSjFUPmKJMT9ygH68IGoBg&ved=0CB0QFjAA&usg=AFQjCNHd-Ti3mofROArpPNOu9x1bGmT6tA
+- http://books.google.de/books?id=SG3jayrd41cC&printsec=frontcover&dq=xmpp+definitive+guide&hl=de&ei=SaogTPr0NdeUOMzwpS0&sa=X&oi=book_result&ct=result&resnum=1&ved=0CCwQ6AEwAA#v=onepage&q&f=false
 
 *** DONE ensure that the chats are correctly sorted
 the fetching of individual messages is now synchronous
